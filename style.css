@@ -3,6 +3,7 @@
   --gold: #ffe27a;
   --green: #00ffbf;
   --red: #ff4747;
+  --blue: #3ea6ff;
 }
 
 * {
@@ -15,62 +16,94 @@ body {
   height: 100%;
   margin: 0;
   overflow: hidden;
-  background: transparent;
   font-family: Arial, Helvetica, sans-serif;
+  background: transparent;
 }
 
 #capricorn-avatar-app {
   width: 100%;
   height: 100vh;
-  min-height: 520px;
+  min-height: 600px;
+  position: relative;
+  overflow: hidden;
+
   display: grid;
   place-items: center;
-  overflow: hidden;
-  position: relative;
-  color: white;
+
   background:
-    radial-gradient(circle at 50% 15%, rgba(0, 234, 255, .22), transparent 30%),
-    radial-gradient(circle at 50% 60%, rgba(255, 226, 122, .12), transparent 32%),
-    linear-gradient(145deg, #020713, #041c3a, #01040c);
+    radial-gradient(circle at 50% 10%, rgba(0,234,255,.25), transparent 28%),
+    radial-gradient(circle at 50% 70%, rgba(255,226,122,.12), transparent 34%),
+    linear-gradient(145deg,#01040c,#05152f,#01040c);
+
+  color: white;
 }
 
 .starfield,
-.scanline {
+.deep-grid,
+.scanline,
+.energy-fog {
   position: absolute;
   inset: 0;
   pointer-events: none;
 }
 
 .starfield {
-  opacity: .24;
+  opacity: .28;
+
   background-image:
     radial-gradient(circle, rgba(255,255,255,.9) 1px, transparent 2px),
-    radial-gradient(circle, rgba(0,234,255,.8) 1px, transparent 2px);
-  background-size: 32px 32px, 70px 70px;
-  animation: starDrift 42s linear infinite;
+    radial-gradient(circle, rgba(0,234,255,.7) 1px, transparent 2px);
+
+  background-size: 35px 35px, 80px 80px;
+
+  animation: starDrift 60s linear infinite;
+}
+
+.deep-grid {
+  opacity: .08;
+
+  background:
+    linear-gradient(rgba(0,234,255,.25) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,234,255,.25) 1px, transparent 1px);
+
+  background-size: 60px 60px;
 }
 
 .scanline {
-  height: 200px;
-  background: linear-gradient(180deg, transparent, rgba(0,234,255,.16), transparent);
-  animation: scan 8s linear infinite;
+  height: 250px;
+
+  background:
+    linear-gradient(
+      180deg,
+      transparent,
+      rgba(0,234,255,.12),
+      transparent
+    );
+
+  animation: scanMove 8s linear infinite;
+}
+
+.energy-fog {
+  background:
+    radial-gradient(circle at 20% 20%, rgba(0,234,255,.08), transparent 30%),
+    radial-gradient(circle at 80% 50%, rgba(255,226,122,.06), transparent 35%);
+
+  animation: fogMove 14s ease-in-out infinite;
 }
 
 .avatar-core {
   position: relative;
   width: 100%;
   height: 100%;
-  min-height: 520px;
   display: grid;
   place-items: center;
-  perspective: 1200px;
 }
 
 .ring {
   position: absolute;
+  border-radius: 50%;
   left: 50%;
   top: 47%;
-  border-radius: 50%;
   transform: translate(-50%, -50%);
   pointer-events: none;
 }
@@ -79,88 +112,121 @@ body {
   width: 300px;
   height: 300px;
   border: 1px solid rgba(0,234,255,.45);
-  box-shadow: 0 0 40px rgba(0,234,255,.18);
   animation: orbitA 18s linear infinite;
 }
 
 .ring-2 {
   width: 430px;
   height: 430px;
-  border: 1px solid rgba(255,226,122,.34);
-  box-shadow: 0 0 50px rgba(255,226,122,.12);
+  border: 1px solid rgba(255,226,122,.25);
   animation: orbitB 30s linear infinite;
 }
 
 .ring-3 {
-  width: 540px;
-  height: 540px;
-  border: 1px dashed rgba(0,234,255,.26);
-  box-shadow: 0 0 60px rgba(0,234,255,.08);
-  animation: orbitA 45s linear infinite;
+  width: 560px;
+  height: 560px;
+  border: 1px dashed rgba(0,234,255,.22);
+  animation: orbitA 50s linear infinite;
+}
+
+.ring-4 {
+  width: 700px;
+  height: 700px;
+  border: 1px dashed rgba(255,255,255,.08);
+  animation: orbitB 70s linear infinite;
 }
 
 .floor-platform {
   position: absolute;
   left: 50%;
-  bottom: 78px;
-  width: 320px;
-  height: 92px;
-  transform: translateX(-50%) rotateX(68deg);
+  bottom: 80px;
+
+  width: 340px;
+  height: 90px;
+
+  transform:
+    translateX(-50%)
+    rotateX(70deg);
+
   border-radius: 50%;
-  border: 2px solid rgba(0,234,255,.32);
+
+  border: 2px solid rgba(0,234,255,.35);
+
   box-shadow:
-    0 0 38px rgba(0,234,255,.35),
-    inset 0 0 28px rgba(255,226,122,.10);
-  animation: platformPulse 2.8s ease-in-out infinite;
-  pointer-events: none;
+    0 0 40px rgba(0,234,255,.4),
+    inset 0 0 25px rgba(255,226,122,.12);
+
+  animation: platformPulse 3s ease-in-out infinite;
 }
 
 .avatar-card {
-  position: absolute;
-  width: 370px;
-  height: 555px;
+  width: 390px;
+  height: 590px;
+
+  position: relative;
   z-index: 10;
-  animation: breath 4s ease-in-out infinite;
-  filter: drop-shadow(0 0 42px rgba(0,234,255,.68));
+
+  animation:
+    breathe 4s ease-in-out infinite;
+
+  filter:
+    drop-shadow(0 0 35px rgba(0,234,255,.55));
 }
 
 .avatar-crop {
-  position: relative;
   width: 100%;
   height: 100%;
+
   overflow: hidden;
+
+  position: relative;
+
   border-radius: 42px;
-  background: rgba(0,0,0,.08);
-  border: 1px solid rgba(0,234,255,.22);
+
+  border: 1px solid rgba(0,234,255,.25);
+
+  background: rgba(0,0,0,.12);
+
   box-shadow:
-    inset 0 0 34px rgba(0,234,255,.12),
-    0 0 42px rgba(0,234,255,.18);
+    inset 0 0 40px rgba(0,234,255,.12),
+    0 0 40px rgba(0,234,255,.18);
 }
 
 .human-avatar {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center center;
-  display: block;
-  transition: transform .2s ease;
+
+  transition:
+    transform .15s linear;
 }
 
 .avatar-mask {
   position: absolute;
   inset: 0;
+
   background:
-    radial-gradient(circle at 50% 43%, transparent 38%, rgba(0,0,0,.22) 82%),
-    linear-gradient(rgba(255,255,255,.02), rgba(0,234,255,.045));
-  pointer-events: none;
+    radial-gradient(circle at 50% 45%, transparent 40%, rgba(0,0,0,.25) 90%);
+}
+
+.avatar-glass {
+  position: absolute;
+  inset: 0;
+
+  background:
+    linear-gradient(
+      120deg,
+      transparent,
+      rgba(255,255,255,.04),
+      transparent
+    );
 }
 
 .eye-tracker {
   position: absolute;
   width: 24px;
   height: 24px;
-  z-index: 25;
-  transition: transform .08s linear;
+  z-index: 20;
 }
 
 .eye-left {
@@ -177,226 +243,246 @@ body {
   width: 18px;
   height: 18px;
   border-radius: 50%;
+
   background: var(--cyan);
-  filter: blur(8px);
-  animation: blinkGlow 5.2s infinite;
-  opacity: .72;
+
+  filter: blur(7px);
+
+  opacity: .8;
 }
 
 .eyelid {
   position: absolute;
   inset: -3px;
+
   border-radius: 50%;
-  background: rgba(2, 7, 19, .82);
+
+  background: rgba(0,0,0,.85);
+
   transform: scaleY(0);
   transform-origin: top center;
-  animation: eyelidBlink 5.2s infinite;
 }
 
 .mouth-light {
   position: absolute;
-  width: 38px;
-  height: 6px;
-  background: var(--gold);
-  filter: blur(9px);
-  border-radius: 999px;
+
   left: 50%;
-  top: 247px;
+  top: 248px;
+
+  width: 40px;
+  height: 6px;
+
   transform: translateX(-50%);
-  opacity: .36;
-  z-index: 22;
+
+  border-radius: 999px;
+
+  background: var(--gold);
+
+  filter: blur(8px);
+
+  opacity: .4;
 }
 
 .chest-light {
   position: absolute;
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
+
   left: 50%;
-  bottom: 132px;
+  bottom: 130px;
+
+  width: 30px;
+  height: 30px;
+
   transform: translateX(-50%);
-  background: radial-gradient(circle, #fff, var(--cyan), transparent);
+
+  border-radius: 50%;
+
+  background:
+    radial-gradient(circle,#fff,var(--cyan),transparent);
+
   animation: pulse 2s infinite;
-  opacity: .88;
-  z-index: 22;
 }
 
 .holo-scan {
   position: absolute;
-  width: 100%;
-  height: 150px;
-  background: linear-gradient(180deg, transparent, rgba(0,234,255,.18), transparent);
+  inset: 0;
+
+  background:
+    linear-gradient(
+      180deg,
+      transparent,
+      rgba(0,234,255,.12),
+      transparent
+    );
+
   animation: holoScan 3.5s linear infinite;
-  pointer-events: none;
-  z-index: 23;
+}
+
+.data-rain {
+  position: absolute;
+  inset: 0;
+
+  background-image:
+    repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 10px,
+      rgba(0,234,255,.03) 11px,
+      transparent 12px
+    );
+
+  opacity: .35;
+}
+
+.radar-pulse {
+  position: absolute;
+
+  width: 220px;
+  height: 220px;
+
+  border-radius: 50%;
+
+  border: 1px solid rgba(0,234,255,.25);
+
+  animation: radarPulse 4s infinite;
 }
 
 .waveform {
   position: absolute;
-  bottom: 36px;
+  bottom: 40px;
+
   display: flex;
   gap: 4px;
-  z-index: 20;
+
+  z-index: 30;
 }
 
 .waveform span {
   width: 4px;
   height: 8px;
+
   border-radius: 999px;
+
   background: var(--cyan);
+
   box-shadow: 0 0 10px var(--cyan);
 }
 
 .status-strip {
   position: absolute;
-  bottom: 8px;
+
+  bottom: 5px;
+
   display: flex;
-  gap: 18px;
-  justify-content: center;
-  align-items: center;
-  padding: 8px 14px;
+  gap: 15px;
+
+  padding: 10px 16px;
+
   border-radius: 999px;
-  background: rgba(2, 14, 34, .70);
-  border: 1px solid rgba(0,234,255,.30);
-  box-shadow:
-    0 0 22px rgba(0,234,255,.18),
-    inset 0 0 18px rgba(255,255,255,.05);
-  z-index: 24;
+
+  background: rgba(0,0,0,.55);
+
+  border: 1px solid rgba(0,234,255,.25);
+
+  z-index: 50;
+
   font-size: 11px;
-  letter-spacing: 1px;
-  white-space: nowrap;
 }
 
 .status-strip strong {
   color: var(--gold);
 }
 
-.status-strip span {
-  color: #eaffff;
-}
-
-/* STATES */
-
 .mode-speaking .waveform span {
-  animation: wave .7s infinite ease-in-out;
+  animation: wave .65s infinite ease-in-out;
 }
 
 .mode-speaking .mouth-light {
-  animation: talk .25s infinite;
-  opacity: .9;
-}
-
-.mode-speaking .chest-light {
-  animation: pulse .65s infinite;
+  animation: talk .2s infinite;
+  opacity: 1;
 }
 
 .mode-speaking .ring {
   animation-duration: 8s;
 }
 
-.mode-listening .ring-1,
-.mode-listening .ring-2 {
-  border-color: rgba(0,255,255,.70);
-  box-shadow: 0 0 42px rgba(0,255,255,.26);
+.mode-listening .ring {
+  box-shadow: 0 0 25px rgba(0,255,255,.4);
 }
 
-.mode-thinking .ring-2,
-.mode-thinking .ring-3 {
-  border-color: rgba(255,226,122,.70);
-  box-shadow: 0 0 42px rgba(255,226,122,.22);
+.mode-thinking .ring {
+  box-shadow: 0 0 25px rgba(255,226,122,.4);
 }
 
 .mode-error .ring {
-  border-color: rgba(255,71,71,.72);
-  box-shadow: 0 0 34px rgba(255,71,71,.34);
+  border-color: rgba(255,71,71,.7);
 }
 
 .mode-error .chest-light {
-  background: radial-gradient(circle, #fff, var(--red), transparent);
+  background:
+    radial-gradient(circle,#fff,var(--red),transparent);
 }
 
 .mode-success .ring,
 .mode-verified .ring {
-  border-color: rgba(0,255,191,.46);
+  border-color: rgba(0,255,191,.45);
 }
-
-.waveform span:nth-child(2) { animation-delay: .08s; }
-.waveform span:nth-child(3) { animation-delay: .16s; }
-.waveform span:nth-child(4) { animation-delay: .24s; }
-.waveform span:nth-child(5) { animation-delay: .32s; }
-.waveform span:nth-child(6) { animation-delay: .40s; }
-.waveform span:nth-child(7) { animation-delay: .48s; }
-.waveform span:nth-child(8) { animation-delay: .56s; }
-.waveform span:nth-child(9) { animation-delay: .64s; }
-.waveform span:nth-child(10) { animation-delay: .72s; }
 
 @keyframes orbitA {
   from { transform: translate(-50%, -50%) rotate(0deg); }
-  to { transform: translate(-50%, -50%) rotate(360deg); }
+  to   { transform: translate(-50%, -50%) rotate(360deg); }
 }
 
 @keyframes orbitB {
   from { transform: translate(-50%, -50%) rotate(360deg); }
-  to { transform: translate(-50%, -50%) rotate(0deg); }
-}
-
-@keyframes breath {
-  0%,100% { transform: translateY(0); }
-  50% { transform: translateY(-7px); }
+  to   { transform: translate(-50%, -50%) rotate(0deg); }
 }
 
 @keyframes pulse {
-  0%,100% { transform: translateX(-50%) scale(.9); opacity: .75; }
-  50% { transform: translateX(-50%) scale(1.1); opacity: 1; }
+  0%,100% { transform: translateX(-50%) scale(.9); }
+  50% { transform: translateX(-50%) scale(1.15); }
 }
 
 @keyframes platformPulse {
-  0%,100% { transform: translateX(-50%) rotateX(68deg) scale(.96); opacity: .65; }
-  50% { transform: translateX(-50%) rotateX(68deg) scale(1.04); opacity: 1; }
+  0%,100% { transform: translateX(-50%) rotateX(70deg) scale(.95); }
+  50% { transform: translateX(-50%) rotateX(70deg) scale(1.05); }
+}
+
+@keyframes breathe {
+  0%,100% { transform: translateY(0px); }
+  50% { transform: translateY(-8px); }
+}
+
+@keyframes radarPulse {
+  0% { transform: scale(.8); opacity:.8; }
+  100% { transform: scale(3.5); opacity:0; }
 }
 
 @keyframes holoScan {
-  from { transform: translateY(-160px); }
-  to { transform: translateY(560px); }
-}
-
-@keyframes blinkGlow {
-  0%,89%,100% { opacity: .72; }
-  92% { opacity: .12; }
-}
-
-@keyframes eyelidBlink {
-  0%,89%,100% { transform: scaleY(0); }
-  92% { transform: scaleY(1); }
-  95% { transform: scaleY(0); }
+  from { transform: translateY(-100%); }
+  to { transform: translateY(100%); }
 }
 
 @keyframes talk {
-  0%,100% { width: 38px; }
-  50% { width: 22px; }
+  0%,100% { width:40px; }
+  50% { width:20px; }
 }
 
 @keyframes wave {
-  0%,100% { height: 8px; }
-  50% { height: 35px; }
+  0%,100% { height:8px; }
+  50% { height:36px; }
 }
 
-@keyframes scan {
+@keyframes scanMove {
   from { transform: translateY(-220px); }
-  to { transform: translateY(1000px); }
+  to { transform: translateY(1200px); }
 }
 
 @keyframes starDrift {
-  from { background-position: 0 0, 0 0; }
-  to { background-position: 600px 600px, -500px 400px; }
+  from { background-position:0 0,0 0; }
+  to { background-position:700px 700px,-500px 400px; }
 }
 
-@media (max-width: 620px) {
-  .avatar-core {
-    transform: scale(.82);
-  }
-
-  .status-strip {
-    transform: scale(.82);
-  }
+@keyframes fogMove {
+  0%,100% { transform:translateX(0); }
+  50% { transform:translateX(20px); }
 }
