@@ -3,32 +3,42 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Capricorn Nexus Core</title>
+  <title>Capricorn Nexus Core V4</title>
   <link rel="stylesheet" href="./style.css"/>
 </head>
 <body>
-  <main id="capricorn-avatar-app" class="mode-idle">
+  <main id="capricorn-avatar-app" class="mode-idle" data-active-module="CORE">
     <div class="starfield"></div>
     <div class="scanline"></div>
+    <div class="holo-floor"></div>
 
     <section class="nexus-core">
       <div class="ring ring-1"></div>
       <div class="ring ring-2"></div>
       <div class="ring ring-3"></div>
+      <div class="ring ring-4"></div>
 
-      <div class="node node-qfn" data-module="QFN">QFN</div>
-      <div class="node node-vault" data-module="VAULT">VAULT</div>
-      <div class="node node-command" data-module="COMMAND">COMMAND</div>
-      <div class="node node-mi8" data-module="MI8">MI8</div>
-      <div class="node node-timeline" data-module="TIMELINE">TIMELINE</div>
-      <div class="node node-recommendations" data-module="RECOMMEND">RECOMMEND</div>
+      <div class="orbit-field orbit-field-one">
+        <button class="node node-qfn" data-module="QFN">QFN</button>
+        <button class="node node-command" data-module="COMMAND">COMMAND</button>
+      </div>
 
-      <div class="connection connection-qfn"></div>
-      <div class="connection connection-vault"></div>
-      <div class="connection connection-command"></div>
-      <div class="connection connection-mi8"></div>
-      <div class="connection connection-timeline"></div>
-      <div class="connection connection-recommendations"></div>
+      <div class="orbit-field orbit-field-two">
+        <button class="node node-vault" data-module="VAULT">VAULT</button>
+        <button class="node node-timeline" data-module="TIMELINE">TIMELINE</button>
+      </div>
+
+      <div class="orbit-field orbit-field-three">
+        <button class="node node-mi8" data-module="MI8">MI8</button>
+        <button class="node node-recommend" data-module="RECOMMEND">RECOMMEND</button>
+      </div>
+
+      <div class="data-stream stream-a"></div>
+      <div class="data-stream stream-b"></div>
+      <div class="data-stream stream-c"></div>
+      <div class="data-stream stream-d"></div>
+      <div class="data-stream stream-e"></div>
+      <div class="data-stream stream-f"></div>
 
       <div class="avatar-card">
         <div class="avatar-crop">
@@ -37,13 +47,28 @@
             src="https://static.wixstatic.com/media/c1955d_c3fb79f32ca844e0be08076d7aefae59~mv2.png"
             alt="Capricorn holographic avatar"
           />
+
           <div class="avatar-mask"></div>
-          <div class="eye-glow eye-glow-left"></div>
-          <div class="eye-glow eye-glow-right"></div>
+
+          <div class="eye-tracker eye-left">
+            <div class="eye-glow"></div>
+            <div class="eyelid"></div>
+          </div>
+
+          <div class="eye-tracker eye-right">
+            <div class="eye-glow"></div>
+            <div class="eyelid"></div>
+          </div>
+
           <div class="mouth-light"></div>
           <div class="chest-light"></div>
           <div class="holo-scan"></div>
         </div>
+      </div>
+
+      <div class="platform">
+        <div class="platform-ring"></div>
+        <div class="platform-core"></div>
       </div>
 
       <div class="waveform">
@@ -51,7 +76,12 @@
         <span></span><span></span><span></span><span></span><span></span>
       </div>
 
-      <div id="statusText" class="status-text">CAPRICORN IDLE</div>
+      <div class="live-status">
+        <div><strong>STATUS:</strong> <span id="statusText">IDLE</span></div>
+        <div><strong>VOICE:</strong> <span id="voiceText">READY</span></div>
+        <div><strong>MEMORY:</strong> <span id="memoryText">ONLINE</span></div>
+        <div><strong>ACTIVE:</strong> <span id="moduleText">CORE</span></div>
+      </div>
     </section>
   </main>
 
