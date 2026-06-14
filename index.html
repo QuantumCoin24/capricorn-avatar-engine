@@ -3,42 +3,19 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Capricorn Nexus Core V4</title>
+  <title>Capricorn Live Avatar Core</title>
   <link rel="stylesheet" href="./style.css"/>
 </head>
 <body>
-  <main id="capricorn-avatar-app" class="mode-idle" data-active-module="CORE">
+  <main id="capricorn-avatar-app" class="mode-idle">
     <div class="starfield"></div>
     <div class="scanline"></div>
-    <div class="holo-floor"></div>
 
-    <section class="nexus-core">
+    <section class="avatar-core">
       <div class="ring ring-1"></div>
       <div class="ring ring-2"></div>
       <div class="ring ring-3"></div>
-      <div class="ring ring-4"></div>
-
-      <div class="orbit-field orbit-field-one">
-        <button class="node node-qfn" data-module="QFN">QFN</button>
-        <button class="node node-command" data-module="COMMAND">COMMAND</button>
-      </div>
-
-      <div class="orbit-field orbit-field-two">
-        <button class="node node-vault" data-module="VAULT">VAULT</button>
-        <button class="node node-timeline" data-module="TIMELINE">TIMELINE</button>
-      </div>
-
-      <div class="orbit-field orbit-field-three">
-        <button class="node node-mi8" data-module="MI8">MI8</button>
-        <button class="node node-recommend" data-module="RECOMMEND">RECOMMEND</button>
-      </div>
-
-      <div class="data-stream stream-a"></div>
-      <div class="data-stream stream-b"></div>
-      <div class="data-stream stream-c"></div>
-      <div class="data-stream stream-d"></div>
-      <div class="data-stream stream-e"></div>
-      <div class="data-stream stream-f"></div>
+      <div class="floor-platform"></div>
 
       <div class="avatar-card">
         <div class="avatar-crop">
@@ -66,21 +43,15 @@
         </div>
       </div>
 
-      <div class="platform">
-        <div class="platform-ring"></div>
-        <div class="platform-core"></div>
-      </div>
-
       <div class="waveform">
         <span></span><span></span><span></span><span></span><span></span>
         <span></span><span></span><span></span><span></span><span></span>
       </div>
 
-      <div class="live-status">
+      <div class="status-strip">
         <div><strong>STATUS:</strong> <span id="statusText">IDLE</span></div>
         <div><strong>VOICE:</strong> <span id="voiceText">READY</span></div>
         <div><strong>MEMORY:</strong> <span id="memoryText">ONLINE</span></div>
-        <div><strong>ACTIVE:</strong> <span id="moduleText">CORE</span></div>
       </div>
     </section>
   </main>
