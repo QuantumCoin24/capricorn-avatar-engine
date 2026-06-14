@@ -1,41 +1,160 @@
 const app = document.getElementById("capricorn-avatar-app");
+
 const statusText = document.getElementById("statusText");
+const voiceText = document.getElementById("voiceText");
+const memoryText = document.getElementById("memoryText");
+const moduleText = document.getElementById("moduleText");
 
-const validModes = ["idle", "verified", "listening", "thinking", "speaking", "success", "error"];
+const leftEye = document.querySelector(".eye-left");
+const rightEye = document.querySelector(".eye-right");
 
-function setAvatarMode(mode = "idle", label = "") {
-  if (!validModes.includes(mode)) mode = "idle";
+const nodes = document.querySelectorAll(".node");
 
-  validModes.forEach(m => app.classList.remove(`mode-${m}`));
+let activeModule = "CORE";
+
+function setMode(mode, label = "") {
+
+  app.classList.remove(
+    "mode-idle",
+    "mode-listening",
+    "mode-thinking",
+    "mode-speaking",
+    "mode-error",
+    "mode-success",
+    "mode-verified"
+  );
+
   app.classList.add(`mode-${mode}`);
 
-  const display = label || `CAPRICORN ${mode.toUpperCase()}`;
-  if (statusText) statusText.textContent = display;
+  if (statusText) {
+    statusText.textContent = label || mode.toUpperCase();
+  }
 
-  window.parent?.postMessage({
-    source: "capricorn-avatar",
-    type: "modeChanged",
-    mode,
-    label: display
-  }, "*");
+  switch (mode) {
+
+    case "listening":
+      voiceText.textContent = "LISTENING";
+      break;
+
+    case "thinking":
+      voiceText.textContent = "ANALYSING";
+      break;
+
+    case "speaking":
+      voiceText.textContent = "SPEAKING";
+      break;
+
+    case "error":
+      voiceText.textContent = "ERROR";
+      break;
+
+    case "verified":
+      voiceText.textContent = "READY";
+      break;
+
+    default:
+      voiceText.textContent = "ONLINE";
+      break;
+  }
 }
 
-window.CapricornAvatar = {
-  setMode: setAvatarMode,
-  idle: () => setAvatarMode("idle"),
-  verified: () => setAvatarMode("verified"),
-  listen: () => setAvatarMode("listening"),
-  think: () => setAvatarMode("thinking"),
-  speak: () => setAvatarMode("speaking"),
-  success: () => setAvatarMode("success"),
-  error: () => setAvatarMode("error")
-};
+function activateModule(moduleName) {
 
-window.addEventListener("message", (event) => {
-  const data = event.data || {};
-  if (data.type === "capricorn:setMode") {
-    setAvatarMode(data.mode, data.label);
-  }
+  activeModule = moduleName;
+
+  app.setAttribute(
+    "data-active-module",
+    moduleName
+  );
+
+  moduleText.textContent = moduleName;
+
+  statusText.textContent =
+    `${moduleName} ACTIVE`;
+
+  console.log(
+    "Capricorn Module Activated:",
+    moduleName
+  );
+}
+
+nodes.forEach(node => {
+
+  node.addEventListener("click", () => {
+
+    const moduleName =
+      node.dataset.module || "CORE";
+
+    activateModule(moduleName);
+
+    setMode(
+      "speaking",
+      `${moduleName} LINKED`
+    );
+
+    setTimeout(() => {
+
+      setMode(
+        "verified",
+        `${moduleName} READY`
+      );
+
+    }, 2500);
+
+  });
+
 });
 
-setAvatarMode("idle", "CAPRICORN IDLE");
+document.addEventListener(
+  "mousemove",
+  (event) => {
+
+    const x =
+      (event.clientX / window.innerWidth - 0.5) * 12;
+
+    const y =
+      (event.clientY / window.innerHeight - 0.5) * 12;
+
+    if (leftEye) {
+      leftEye.style.transform =
+        `translate(${x}px, ${y}px)`;
+    }
+
+    if (rightEye) {
+      rightEye.style.transform =
+        `translate(${x}px, ${y}px)`;
+    }
+
+  }
+);
+
+window.addEventListener(
+  "message",
+  (event) => {
+
+    const data = event.data || {};
+
+    if (
+      data.type !== "capricorn:setMode"
+    ) {
+      return;
+    }
+
+    setMode(
+      data.mode || "idle",
+      data.label || ""
+    );
+
+  }
+);
+
+memoryText.textContent = "ONLINE";
+voiceText.textContent = "READY";
+moduleText.textContent = "CORE";
+
+setMode(
+  "verified",
+  "CAPRICORN READY"
+);
+
+activateModule("CORE");
