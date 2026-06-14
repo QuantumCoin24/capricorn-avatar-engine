@@ -3,17 +3,12 @@ const app = document.getElementById("capricorn-avatar-app");
 const statusText = document.getElementById("statusText");
 const voiceText = document.getElementById("voiceText");
 const memoryText = document.getElementById("memoryText");
-const moduleText = document.getElementById("moduleText");
 
 const leftEye = document.querySelector(".eye-left");
 const rightEye = document.querySelector(".eye-right");
+const avatarImage = document.querySelector(".human-avatar");
 
-const nodes = document.querySelectorAll(".node");
-
-let activeModule = "CORE";
-
-function setMode(mode, label = "") {
-
+function setMode(mode = "idle", label = "") {
   app.classList.remove(
     "mode-idle",
     "mode-listening",
@@ -30,131 +25,48 @@ function setMode(mode, label = "") {
     statusText.textContent = label || mode.toUpperCase();
   }
 
-  switch (mode) {
-
-    case "listening":
-      voiceText.textContent = "LISTENING";
-      break;
-
-    case "thinking":
-      voiceText.textContent = "ANALYSING";
-      break;
-
-    case "speaking":
-      voiceText.textContent = "SPEAKING";
-      break;
-
-    case "error":
-      voiceText.textContent = "ERROR";
-      break;
-
-    case "verified":
-      voiceText.textContent = "READY";
-      break;
-
-    default:
-      voiceText.textContent = "ONLINE";
-      break;
+  if (voiceText) {
+    if (mode === "listening") voiceText.textContent = "LISTENING";
+    else if (mode === "thinking") voiceText.textContent = "ANALYSING";
+    else if (mode === "speaking") voiceText.textContent = "SPEAKING";
+    else if (mode === "error") voiceText.textContent = "ERROR";
+    else voiceText.textContent = "READY";
   }
 }
 
-function activateModule(moduleName) {
+document.addEventListener("mousemove", (event) => {
+  const x = (event.clientX / window.innerWidth - 0.5) * 10;
+  const y = (event.clientY / window.innerHeight - 0.5) * 10;
 
-  activeModule = moduleName;
+  if (leftEye) {
+    leftEye.style.transform = `translate(${x}px, ${y}px)`;
+  }
 
-  app.setAttribute(
-    "data-active-module",
-    moduleName
-  );
+  if (rightEye) {
+    rightEye.style.transform = `translate(${x}px, ${y}px)`;
+  }
 
-  moduleText.textContent = moduleName;
-
-  statusText.textContent =
-    `${moduleName} ACTIVE`;
-
-  console.log(
-    "Capricorn Module Activated:",
-    moduleName
-  );
-}
-
-nodes.forEach(node => {
-
-  node.addEventListener("click", () => {
-
-    const moduleName =
-      node.dataset.module || "CORE";
-
-    activateModule(moduleName);
-
-    setMode(
-      "speaking",
-      `${moduleName} LINKED`
-    );
-
-    setTimeout(() => {
-
-      setMode(
-        "verified",
-        `${moduleName} READY`
-      );
-
-    }, 2500);
-
-  });
-
+  if (avatarImage) {
+    avatarImage.style.transform = `translate(${x * 0.35}px, ${y * 0.25}px) scale(1.01)`;
+  }
 });
 
-document.addEventListener(
-  "mousemove",
-  (event) => {
+window.addEventListener("message", (event) => {
+  const data = event.data || {};
 
-    const x =
-      (event.clientX / window.innerWidth - 0.5) * 12;
-
-    const y =
-      (event.clientY / window.innerHeight - 0.5) * 12;
-
-    if (leftEye) {
-      leftEye.style.transform =
-        `translate(${x}px, ${y}px)`;
-    }
-
-    if (rightEye) {
-      rightEye.style.transform =
-        `translate(${x}px, ${y}px)`;
-    }
-
+  if (data.type !== "capricorn:setMode") {
+    return;
   }
-);
 
-window.addEventListener(
-  "message",
-  (event) => {
+  setMode(data.mode || "idle", data.label || "");
+});
 
-    const data = event.data || {};
+if (memoryText) {
+  memoryText.textContent = "ONLINE";
+}
 
-    if (
-      data.type !== "capricorn:setMode"
-    ) {
-      return;
-    }
+if (voiceText) {
+  voiceText.textContent = "READY";
+}
 
-    setMode(
-      data.mode || "idle",
-      data.label || ""
-    );
-
-  }
-);
-
-memoryText.textContent = "ONLINE";
-voiceText.textContent = "READY";
-moduleText.textContent = "CORE";
-
-setMode(
-  "verified",
-  "CAPRICORN READY"
-);
-
-activateModule("CORE");
+setMode("verified", "CAPRICORN READY");
