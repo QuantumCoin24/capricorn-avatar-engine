@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Capricorn Avatar Engine V1</title>
+  <link rel="stylesheet" href="./style.css"/>
+</head>
+<body>
+  <main id="capricorn-avatar-app" class="mode-idle">
+    <div class="starfield"></div>
+    <div class="scanline"></div>
+
+    <section class="avatar-shell">
+      <div class="halo halo-1"></div>
+      <div class="halo halo-2"></div>
+      <div class="halo halo-3"></div>
+
+      <div class="avatar">
+        <div class="hair hair-back"></div>
+
+        <div class="body">
+          <div class="shoulder left"></div>
+          <div class="shoulder right"></div>
+          <div class="torso">
+            <div class="core"></div>
+            <div class="suit-line suit-a"></div>
+            <div class="suit-line suit-b"></div>
+            <div class="suit-line suit-c"></div>
+          </div>
+        </div>
+
+        <div class="neck"></div>
+
+        <div class="head">
+          <div class="face">
+            <div class="hair hair-fringe"></div>
+            <div class="brow brow-left"></div>
+            <div class="brow brow-right"></div>
+            <div class="eye eye-left"><i></i></div>
+            <div class="eye eye-right"><i></i></div>
+            <div class="nose"></div>
+            <div class="mouth"></div>
+            <div class="cheek cheek-left"></div>
+            <div class="cheek cheek-right"></div>
+          </div>
+        </div>
+
+        <div class="holo-scan"></div>
+      </div>
+
+      <div class="waveform" aria-hidden="true">
+        <span></span><span></span><span></span><span></span><span></span>
+        <span></span><span></span><span></span><span></span><span></span>
+      </div>
+
+      <div id="statusText" class="status-text">CAPRICORN IDLE</div>
+    </section>
+  </main>
+
+  <script src="./avatar.js"></script>
+</body>
+</html>
