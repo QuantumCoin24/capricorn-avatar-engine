@@ -3,47 +3,57 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Capricorn Live Avatar Core</title>
+  <title>Capricorn Live Avatar Engine V3</title>
   <link rel="stylesheet" href="./style.css"/>
 </head>
+
 <body>
   <main id="capricorn-avatar-app" class="mode-idle">
     <div class="starfield"></div>
+    <div class="deep-grid"></div>
     <div class="scanline"></div>
+    <div class="energy-fog"></div>
 
     <section class="avatar-core">
       <div class="ring ring-1"></div>
       <div class="ring ring-2"></div>
       <div class="ring ring-3"></div>
+      <div class="ring ring-4"></div>
+
       <div class="floor-platform"></div>
 
-      <div class="avatar-card">
+      <div class="avatar-card" id="avatarCard">
         <div class="avatar-crop">
           <img
             class="human-avatar"
+            id="humanAvatar"
             src="https://static.wixstatic.com/media/c1955d_c3fb79f32ca844e0be08076d7aefae59~mv2.png"
             alt="Capricorn holographic avatar"
           />
 
           <div class="avatar-mask"></div>
+          <div class="avatar-glass"></div>
 
-          <div class="eye-tracker eye-left">
+          <div class="eye-tracker eye-left" id="eyeLeft">
             <div class="eye-glow"></div>
             <div class="eyelid"></div>
           </div>
 
-          <div class="eye-tracker eye-right">
+          <div class="eye-tracker eye-right" id="eyeRight">
             <div class="eye-glow"></div>
             <div class="eyelid"></div>
           </div>
 
-          <div class="mouth-light"></div>
+          <div class="mouth-light" id="mouthLight"></div>
           <div class="chest-light"></div>
           <div class="holo-scan"></div>
+          <div class="data-rain"></div>
         </div>
       </div>
 
-      <div class="waveform">
+      <div class="radar-pulse"></div>
+
+      <div class="waveform" aria-hidden="true">
         <span></span><span></span><span></span><span></span><span></span>
         <span></span><span></span><span></span><span></span><span></span>
       </div>
@@ -52,6 +62,7 @@
         <div><strong>STATUS:</strong> <span id="statusText">IDLE</span></div>
         <div><strong>VOICE:</strong> <span id="voiceText">READY</span></div>
         <div><strong>MEMORY:</strong> <span id="memoryText">ONLINE</span></div>
+        <div><strong>MODE:</strong> <span id="modeText">STANDBY</span></div>
       </div>
     </section>
   </main>
