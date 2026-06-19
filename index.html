@@ -90,8 +90,8 @@ html,body{
 
 .core-wrap{
   position:relative;
-  width:680px;
-  height:680px;
+  width:720px;
+  height:720px;
   display:grid;
   place-items:center;
 }
@@ -103,15 +103,15 @@ html,body{
   box-shadow:0 0 28px var(--soft), inset 0 0 24px rgba(0,234,255,.08);
 }
 
-.r1{width:255px;height:255px;animation:spin 10s linear infinite}
-.r2{width:360px;height:360px;border-style:dashed;opacity:.78;animation:spinReverse 18s linear infinite}
-.r3{width:485px;height:485px;border-color:rgba(0,234,255,.42);animation:spin 32s linear infinite}
-.r4{width:620px;height:620px;border-style:dashed;border-color:rgba(255,255,255,.16);animation:spinReverse 52s linear infinite}
+.r1{width:310px;height:310px;animation:spin 10s linear infinite}
+.r2{width:415px;height:415px;border-style:dashed;opacity:.78;animation:spinReverse 18s linear infinite}
+.r3{width:535px;height:535px;border-color:rgba(0,234,255,.42);animation:spin 32s linear infinite}
+.r4{width:660px;height:660px;border-style:dashed;border-color:rgba(255,255,255,.16);animation:spinReverse 52s linear infinite}
 
 .orb{
   position:relative;
-  width:290px;
-  height:290px;
+  width:340px;
+  height:340px;
   border-radius:50%;
   display:grid;
   place-items:center;
@@ -119,9 +119,9 @@ html,body{
   background:
     radial-gradient(circle,var(--soft),rgba(0,234,255,.09) 48%,rgba(0,0,0,.24) 75%);
   box-shadow:
-    0 0 76px var(--soft),
-    0 0 125px rgba(0,234,255,.26),
-    inset 0 0 76px var(--soft);
+    0 0 90px var(--soft),
+    0 0 145px rgba(0,234,255,.32),
+    inset 0 0 90px var(--soft);
   overflow:hidden;
   animation:breathe 3.2s ease-in-out infinite;
   z-index:10;
@@ -142,10 +142,10 @@ html,body{
 .logo{
   position:relative;
   z-index:5;
-  width:195px;
-  height:195px;
+  width:230px;
+  height:230px;
   object-fit:contain;
-  filter:drop-shadow(0 0 20px var(--core)) drop-shadow(0 0 50px rgba(0,234,255,.38));
+  filter:drop-shadow(0 0 24px var(--core)) drop-shadow(0 0 60px rgba(0,234,255,.42));
   animation:logoPulse 2.6s ease-in-out infinite;
 }
 
@@ -168,8 +168,8 @@ html,body{
 
 .platform{
   position:absolute;
-  bottom:72px;
-  width:350px;
+  bottom:58px;
+  width:390px;
   height:78px;
   border-radius:50%;
   border:2px solid rgba(0,234,255,.42);
@@ -180,8 +180,8 @@ html,body{
 
 .command-halo{
   position:absolute;
-  width:560px;
-  height:560px;
+  width:610px;
+  height:610px;
   border-radius:50%;
   animation:haloDrift 20s linear infinite;
   z-index:15;
@@ -241,13 +241,13 @@ html,body{
 }
 
 .n-qfn{left:50%;top:0;transform:translate(-50%,-50%)}
-.n-vault{right:50px;top:80px}
+.n-vault{right:55px;top:88px}
 .n-timeline{right:-34px;top:50%;transform:translateY(-50%)}
-.n-cert{right:50px;bottom:80px}
+.n-cert{right:55px;bottom:88px}
 .n-reports{left:50%;bottom:0;transform:translate(-50%,50%)}
-.n-learning{left:50px;bottom:80px}
+.n-learning{left:55px;bottom:88px}
 .n-mi8{left:-34px;top:50%;transform:translateY(-50%)}
-.n-dossier{left:50px;top:80px}
+.n-dossier{left:55px;top:88px}
 
 .n-qfn:hover{transform:translate(-50%,-50%) scale(1.16)}
 .n-timeline:hover,.n-mi8:hover{transform:translateY(-50%) scale(1.16)}
@@ -318,12 +318,12 @@ html,body{
 
 @media(max-width:700px){
   .core-wrap{width:100%;height:100vh}
-  .command-halo{width:350px;height:350px}
+  .command-halo{width:390px;height:390px}
   .node{width:60px;height:60px}
   .node strong{font-size:8px}
   .node span{font-size:8px}
-  .orb{width:225px;height:225px}
-  .logo{width:150px;height:150px}
+  .orb{width:245px;height:245px}
+  .logo{width:165px;height:165px}
   .r3,.r4{display:none}
   .tooltip{display:none}
   .status{width:calc(100% - 20px);justify-content:center;flex-wrap:wrap;border-radius:16px}
