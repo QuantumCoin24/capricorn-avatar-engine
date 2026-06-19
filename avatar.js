@@ -4,6 +4,7 @@ const statusText = document.getElementById("statusText");
 const voiceText = document.getElementById("voiceText");
 const memoryText = document.getElementById("memoryText");
 const modeText = document.getElementById("modeText");
+const claimantStateText = document.getElementById("claimantStateText");
 
 const coreCard = document.getElementById("coreCard");
 const coreLogo = document.getElementById("coreLogo");
@@ -18,10 +19,65 @@ const validModes = [
   "error"
 ];
 
+const claimantClasses = [
+  "claimant-observer",
+  "claimant-verified",
+  "claimant-active",
+  "claimant-command",
+  "claimant-alert"
+];
+
 let currentMode = "idle";
 let idleTick = 0;
 let mouseX = 0;
 let mouseY = 0;
+
+function setClaimantClass(value = "") {
+  const raw = String(value || "").toLowerCase();
+
+  claimantClasses.forEach((name) => {
+    app.classList.remove(name);
+  });
+
+  let selected = "claimant-verified";
+  let label = "CENTRAL INTELLIGENCE CORE";
+
+  if (raw.includes("observer") || raw.includes("participant")) {
+    selected = "claimant-observer";
+    label = "OBSERVER CORE";
+  }
+
+  if (raw.includes("verified")) {
+    selected = "claimant-verified";
+    label = "VERIFIED CLAIMANT CORE";
+  }
+
+  if (raw.includes("active")) {
+    selected = "claimant-active";
+    label = "ACTIVE CLAIMANT CORE";
+  }
+
+  if (
+    raw.includes("command") ||
+    raw.includes("commander") ||
+    raw.includes("chief") ||
+    raw.includes("executive")
+  ) {
+    selected = "claimant-command";
+    label = "COMMAND CORE";
+  }
+
+  if (raw.includes("alert") || raw.includes("risk") || raw.includes("error")) {
+    selected = "claimant-alert";
+    label = "ALERT CORE";
+  }
+
+  app.classList.add(selected);
+
+  if (claimantStateText) {
+    claimantStateText.textContent = label;
+  }
+}
 
 function setMode(mode = "idle", label = "") {
   if (!validModes.includes(mode)) {
@@ -177,19 +233,21 @@ function listeningPulse() {
 }
 
 function bootSequence() {
+  setClaimantClass("verified");
   setMode("idle", "CAPRICORN CORE BOOTING");
 
   setTimeout(() => {
-    setMode("thinking", "LOADING OS CORE");
+    setMode("thinking", "CONSTRUCTING CORE");
   }, 600);
 
   setTimeout(() => {
     setMode("verified", "CAPRICORN CORE READY");
-  }, 1500);
+  }, 1700);
 }
 
 window.CapricornAvatar = {
   setMode,
+  setClaimantClass,
   idle: () => setMode("idle"),
   verified: () => setMode("verified"),
   listen: () => setMode("listening"),
@@ -202,11 +260,20 @@ window.CapricornAvatar = {
 window.addEventListener("message", (event) => {
   const data = event.data || {};
 
+  if (data.type === "capricorn:setClaimantClass") {
+    setClaimantClass(data.claimantLevel || data.status || "");
+    return;
+  }
+
   if (data.type !== "capricorn:setMode") {
     return;
   }
 
   setMode(data.mode || "idle", data.label || "");
+
+  if (data.claimantLevel || data.status) {
+    setClaimantClass(data.claimantLevel || data.status);
+  }
 
   if (data.mode === "thinking") {
     pulseThinking();
