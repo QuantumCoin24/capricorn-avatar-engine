@@ -1,340 +1,156 @@
 const app = document.getElementById("capricorn-avatar-app");
-
+const claimantStateText = document.getElementById("claimantStateText");
 const statusText = document.getElementById("statusText");
 const voiceText = document.getElementById("voiceText");
 const memoryText = document.getElementById("memoryText");
 const modeText = document.getElementById("modeText");
-const claimantStateText = document.getElementById("claimantStateText");
 
-const coreCard = document.getElementById("coreCard");
-const coreLogo = document.getElementById("coreLogo");
+const tooltip = document.getElementById("moduleTooltip");
+const tooltipTitle = document.getElementById("tooltipTitle");
+const tooltipBody = document.getElementById("tooltipBody");
 
-const validModes = [
-  "idle",
-  "verified",
-  "listening",
-  "thinking",
-  "speaking",
-  "success",
-  "error"
-];
+const nodeMap = {
+  QFN: document.getElementById("nodeQfn"),
+  VAULT: document.getElementById("nodeVault"),
+  TIMELINE: document.getElementById("nodeTimeline"),
+  CERTIFICATES: document.getElementById("nodeCertificates"),
+  REPORTS: document.getElementById("nodeReports"),
+  LEARNING: document.getElementById("nodeLearning"),
+  MI8: document.getElementById("nodeMi8"),
+  DOSSIER: document.getElementById("nodeDossier")
+};
 
-const claimantClasses = [
-  "claimant-observer",
-  "claimant-participant",
-  "claimant-active",
-  "claimant-verified",
-  "claimant-advanced",
-  "claimant-command",
-  "claimant-alert"
-];
+let commandDeckData = {};
 
-let currentMode = "idle";
-let currentClaimantClass = "claimant-verified";
-let idleTick = 0;
-let mouseX = 0;
-let mouseY = 0;
-
-function setClaimantClass(value = "") {
-  const raw = String(value || "").toLowerCase().trim();
-
-  claimantClasses.forEach((name) => {
-    app.classList.remove(name);
-  });
-
-  let selected = "claimant-verified";
-  let label = "VERIFIED CLAIMANT CORE";
-
-  if (raw.includes("observer")) {
-    selected = "claimant-observer";
-    label = "OBSERVER CORE";
-  }
-
-  if (raw.includes("participant")) {
-    selected = "claimant-participant";
-    label = "PARTICIPANT CORE";
-  }
-
-  if (raw.includes("active")) {
-    selected = "claimant-active";
-    label = "ACTIVE CLAIMANT CORE";
-  }
-
-  if (raw.includes("verified")) {
-    selected = "claimant-verified";
-    label = "VERIFIED CLAIMANT CORE";
-  }
-
-  if (raw.includes("advanced")) {
-    selected = "claimant-advanced";
-    label = "ADVANCED CLAIMANT CORE";
-  }
-
-  if (
-    raw.includes("command") ||
-    raw.includes("commander") ||
-    raw.includes("chief") ||
-    raw.includes("executive") ||
-    raw.includes("master")
-  ) {
-    selected = "claimant-command";
-    label = "COMMAND CORE";
-  }
-
-  if (
-    raw.includes("alert") ||
-    raw.includes("risk") ||
-    raw.includes("error") ||
-    raw.includes("blocked")
-  ) {
-    selected = "claimant-alert";
-    label = "ALERT CORE";
-  }
-
-  currentClaimantClass = selected;
-  app.classList.add(selected);
-
-  if (claimantStateText) {
-    claimantStateText.textContent = label;
-  }
-
-  window.parent?.postMessage({
-    source: "capricorn-avatar",
-    type: "claimantClassChanged",
-    claimantClass: selected,
-    label
-  }, "*");
+function clean(value, fallback = "--") {
+  if (value === undefined || value === null || value === "") return fallback;
+  return String(value);
 }
 
 function setMode(mode = "idle", label = "") {
-  if (!validModes.includes(mode)) {
-    mode = "idle";
-  }
-
-  currentMode = mode;
-
-  validModes.forEach((m) => {
-    app.classList.remove(`mode-${m}`);
-  });
+  app.classList.remove(
+    "mode-idle",
+    "mode-speaking",
+    "mode-listening",
+    "mode-thinking",
+    "mode-error",
+    "mode-success",
+    "mode-verified"
+  );
 
   app.classList.add(`mode-${mode}`);
 
-  const display = label || `CAPRICORN ${mode.toUpperCase()}`;
+  statusText.textContent =
+    mode === "speaking" ? "SPEAKING" :
+    mode === "listening" ? "LISTENING" :
+    mode === "thinking" ? "THINKING" :
+    mode === "error" ? "ERROR" :
+    mode === "success" ? "SUCCESS" :
+    mode === "verified" ? "ONLINE" :
+    "IDLE";
 
-  if (statusText) {
-    statusText.textContent = display;
-  }
+  modeText.textContent = label || mode.toUpperCase();
 
-  if (modeText) {
-    modeText.textContent = mode.toUpperCase();
-  }
-
-  if (voiceText) {
-    if (mode === "listening") {
-      voiceText.textContent = "LISTENING";
-    } else if (mode === "thinking") {
-      voiceText.textContent = "ANALYSING";
-    } else if (mode === "speaking") {
-      voiceText.textContent = "SPEAKING";
-    } else if (mode === "error") {
-      voiceText.textContent = "ERROR";
-    } else {
-      voiceText.textContent = "READY";
-    }
-  }
-
-  if (memoryText) {
-    memoryText.textContent = "ONLINE";
-  }
-
-  window.parent?.postMessage({
-    source: "capricorn-avatar",
-    type: "modeChanged",
-    mode,
-    label: display,
-    claimantClass: currentClaimantClass
-  }, "*");
+  if (label) claimantStateText.textContent = label;
 }
 
-function clamp(value, min, max) {
-  return Math.max(min, Math.min(max, value));
+function setClaimantClass(payload = {}) {
+  const value = String(payload.claimantLevel || payload.status || "Observer").toLowerCase();
+
+  app.classList.remove(
+    "claimant-observer",
+    "claimant-participant",
+    "claimant-active",
+    "claimant-verified",
+    "claimant-advanced",
+    "claimant-command",
+    "claimant-alert"
+  );
+
+  let className = "claimant-observer";
+
+  if (value.includes("alert") || value.includes("risk")) className = "claimant-alert";
+  else if (value.includes("command") || value.includes("chief") || value.includes("root")) className = "claimant-command";
+  else if (value.includes("advanced") || value.includes("ultimate")) className = "claimant-advanced";
+  else if (value.includes("verified") || value.includes("active claimant")) className = "claimant-verified";
+  else if (value.includes("active")) className = "claimant-active";
+  else if (value.includes("participant")) className = "claimant-participant";
+
+  app.classList.add(className);
+
+  claimantStateText.textContent = `${value.toUpperCase()} COMMAND DECK`;
 }
 
-function handlePointerMove(event) {
-  mouseX = (event.clientX / window.innerWidth - 0.5) * 2;
-  mouseY = (event.clientY / window.innerHeight - 0.5) * 2;
+function setCommandDeck(data = {}) {
+  commandDeckData = data || {};
 
-  const cardMoveX = clamp(mouseX * 5, -5, 5);
-  const cardMoveY = clamp(mouseY * 4, -4, 4);
-  const logoMoveX = clamp(mouseX * 6, -6, 6);
-  const logoMoveY = clamp(mouseY * 5, -5, 5);
+  nodeMap.QFN.textContent = clean(data.qfnStatus || data.qfnTier || data.qfnCount);
+  nodeMap.VAULT.textContent = clean(data.vaultCount, "0");
+  nodeMap.TIMELINE.textContent = clean(data.timelineCount, "0");
+  nodeMap.CERTIFICATES.textContent = clean(data.certificateCount, "0");
+  nodeMap.REPORTS.textContent = clean(data.reportCount, "0");
+  nodeMap.LEARNING.textContent = clean(data.learningCount, "0");
+  nodeMap.MI8.textContent = clean(data.mi8Count, "0");
+  nodeMap.DOSSIER.textContent = clean(data.dossierStatus, "READY");
 
-  if (coreCard) {
-    coreCard.style.transform = `
-      rotateY(${mouseX * 3}deg)
-      rotateX(${-mouseY * 2}deg)
-      translate(${cardMoveX}px, ${cardMoveY}px)
-    `;
-  }
-
-  if (coreLogo) {
-    coreLogo.style.marginLeft = `${logoMoveX}px`;
-    coreLogo.style.marginTop = `${logoMoveY}px`;
-  }
+  memoryText.textContent = clean(data.memoryStatus, "ONLINE");
 }
 
-function idleLife() {
-  idleTick += 1;
+function moduleBody(module) {
+  const d = commandDeckData || {};
 
-  if (
-    currentMode === "idle" ||
-    currentMode === "verified" ||
-    currentMode === "success"
-  ) {
-    const swayX = Math.sin(idleTick / 22) * 2.5;
-    const swayY = Math.cos(idleTick / 26) * 2;
+  const map = {
+    QFN: `Tier: ${clean(d.qfnTier)} | Account: ${clean(d.qfnStatus)} | Units: ${clean(d.unitBalance, "0")}`,
+    VAULT: `${clean(d.vaultCount, "0")} vault file(s) connected.`,
+    TIMELINE: `${clean(d.timelineCount, "0")} timeline entrie(s) connected.`,
+    CERTIFICATES: `${clean(d.certificateCount, "0")} certificate record(s) connected.`,
+    REPORTS: `${clean(d.reportCount, "0")} report record(s) connected.`,
+    LEARNING: `${clean(d.learningCount, "0")} learning record(s) connected.`,
+    MI8: `${clean(d.mi8Count, "0")} MI8 intelligence record(s) connected.`,
+    DOSSIER: "Build full claimant intelligence dossier."
+  };
 
-    if (coreCard) {
-      coreCard.style.marginLeft = `${swayX}px`;
-      coreCard.style.marginTop = `${swayY}px`;
-    }
-
-    if (coreLogo && currentMode !== "speaking") {
-      const pulse = 1 + Math.sin(idleTick / 34) * 0.015;
-      coreLogo.style.transform = `scale(${pulse})`;
-    }
-  }
-
-  requestAnimationFrame(idleLife);
+  return map[module] || "Command module ready.";
 }
 
-function pulseThinking() {
-  if (currentMode !== "thinking") return;
+document.querySelectorAll(".command-node").forEach(node => {
+  node.addEventListener("mouseenter", () => {
+    const module = node.dataset.module;
+    tooltipTitle.textContent = module;
+    tooltipBody.textContent = moduleBody(module);
+    tooltip.classList.add("active");
+  });
 
-  if (statusText) {
-    statusText.textContent = "CAPRICORN ANALYSING";
+  node.addEventListener("mouseleave", () => {
+    tooltip.classList.remove("active");
+  });
+
+  node.addEventListener("click", () => {
+    const module = node.dataset.module;
+
+    window.parent.postMessage({
+      type: "capricorn:moduleClick",
+      module
+    }, "*");
+
+    setMode("thinking", `OPENING ${module}`);
+  });
+});
+
+window.addEventListener("message", event => {
+  const msg = event.data || {};
+
+  if (msg.type === "capricorn:setMode") {
+    setMode(msg.mode, msg.label);
   }
 
-  setTimeout(() => {
-    if (currentMode === "thinking" && statusText) {
-      statusText.textContent = "PROCESSING MEMORY";
-    }
-  }, 700);
-
-  setTimeout(() => {
-    if (currentMode === "thinking" && statusText) {
-      statusText.textContent = "SCANNING CONTEXT";
-    }
-  }, 1400);
-
-  setTimeout(() => {
-    if (currentMode === "thinking") {
-      pulseThinking();
-    }
-  }, 2200);
-}
-
-function speakingPulse() {
-  if (currentMode !== "speaking") return;
-
-  if (coreLogo) {
-    const scale = 1.04 + Math.random() * 0.08;
-    coreLogo.style.transform = `scale(${scale})`;
+  if (msg.type === "capricorn:setClaimantClass") {
+    setClaimantClass(msg);
   }
 
-  setTimeout(speakingPulse, 110);
-}
-
-function listeningPulse() {
-  if (currentMode !== "listening") return;
-
-  if (statusText) {
-    statusText.textContent = "CAPRICORN LISTENING";
-  }
-
-  setTimeout(() => {
-    if (currentMode === "listening" && statusText) {
-      statusText.textContent = "VOICE INPUT OPEN";
-    }
-  }, 900);
-
-  setTimeout(() => {
-    if (currentMode === "listening") {
-      listeningPulse();
-    }
-  }, 1800);
-}
-
-function bootSequence() {
-  setClaimantClass("verified");
-  setMode("idle", "CAPRICORN CORE BOOTING");
-
-  setTimeout(() => {
-    setMode("thinking", "CONSTRUCTING CORE");
-  }, 600);
-
-  setTimeout(() => {
-    setMode("verified", "CAPRICORN CORE READY");
-  }, 1700);
-}
-
-window.CapricornAvatar = {
-  setMode,
-  setClaimantClass,
-  idle: () => setMode("idle"),
-  verified: () => setMode("verified"),
-  listen: () => setMode("listening"),
-  think: () => setMode("thinking"),
-  speak: () => setMode("speaking"),
-  success: () => setMode("success"),
-  error: () => setMode("error")
-};
-
-window.addEventListener("message", (event) => {
-  const data = event.data || {};
-
-  if (data.type === "capricorn:setClaimantClass") {
-    setClaimantClass(data.claimantLevel || data.status || "");
-    return;
-  }
-
-  if (data.type !== "capricorn:setMode") {
-    return;
-  }
-
-  setMode(data.mode || "idle", data.label || "");
-
-  if (data.claimantLevel || data.status) {
-    setClaimantClass(data.claimantLevel || data.status);
-  }
-
-  if (data.mode === "thinking") {
-    pulseThinking();
-  }
-
-  if (data.mode === "speaking") {
-    speakingPulse();
-  }
-
-  if (data.mode === "listening") {
-    listeningPulse();
+  if (msg.type === "capricorn:setCommandDeck") {
+    setCommandDeck(msg.data || {});
   }
 });
 
-document.addEventListener("mousemove", handlePointerMove);
-
-document.addEventListener("touchmove", (event) => {
-  if (!event.touches || !event.touches[0]) return;
-  handlePointerMove(event.touches[0]);
-}, { passive: true });
-
-if (memoryText) {
-  memoryText.textContent = "ONLINE";
-}
-
-if (voiceText) {
-  voiceText.textContent = "READY";
-}
-
-idleLife();
-bootSequence();
+setMode("idle", "COMMAND DECK ONLINE");
