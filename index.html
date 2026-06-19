@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Capricorn OS Core Reactor</title>
+<title>Capricorn OS Command Deck V3</title>
 
 <style>
 :root{
@@ -11,17 +11,19 @@
   --gold:#ffe27a;
   --green:#00ffbf;
   --red:#ff4747;
+  --blue:#3ea6ff;
+  --white:#e8f5ff;
   --core:var(--gold);
   --soft:rgba(255,226,122,.22);
-  --glow:rgba(255,226,122,.8);
+  --glow:rgba(255,226,122,.88);
 }
 
 *{box-sizing:border-box}
 
 html,body{
-  margin:0;
   width:100%;
   height:100%;
+  margin:0;
   overflow:hidden;
   background:transparent;
   font-family:Arial,Helvetica,sans-serif;
@@ -31,26 +33,26 @@ html,body{
   position:relative;
   width:100%;
   height:100vh;
-  min-height:520px;
+  min-height:540px;
   display:grid;
   place-items:center;
   overflow:hidden;
   color:white;
   background:
     radial-gradient(circle at 50% 50%, var(--soft), transparent 34%),
-    radial-gradient(circle at 50% 20%, rgba(0,234,255,.16), transparent 32%),
+    radial-gradient(circle at 50% 18%, rgba(0,234,255,.2), transparent 32%),
     linear-gradient(145deg,#020714,#04182e,#01030a);
 }
 
 .claimant-observer{--core:#3ea6ff;--soft:rgba(62,166,255,.22);--glow:rgba(62,166,255,.8)}
 .claimant-participant{--core:#00eaff;--soft:rgba(0,234,255,.22);--glow:rgba(0,234,255,.8)}
 .claimant-active{--core:#00ffbf;--soft:rgba(0,255,191,.22);--glow:rgba(0,255,191,.8)}
-.claimant-verified{--core:#ffe27a;--soft:rgba(255,226,122,.22);--glow:rgba(255,226,122,.8)}
+.claimant-verified{--core:#ffe27a;--soft:rgba(255,226,122,.22);--glow:rgba(255,226,122,.88)}
 .claimant-advanced{--core:#e8f5ff;--soft:rgba(232,245,255,.24);--glow:rgba(232,245,255,.9)}
-.claimant-command{--core:#fff4c7;--soft:rgba(255,244,199,.28);--glow:rgba(255,244,199,1)}
-.claimant-alert{--core:#ff4747;--soft:rgba(255,71,71,.24);--glow:rgba(255,71,71,.8)}
+.claimant-command{--core:#fff4c7;--soft:rgba(255,244,199,.3);--glow:rgba(255,244,199,1)}
+.claimant-alert{--core:#ff4747;--soft:rgba(255,71,71,.24);--glow:rgba(255,71,71,.85)}
 
-.stars,.grid,.scan,.fog{
+.layer{
   position:absolute;
   inset:0;
   pointer-events:none;
@@ -58,38 +60,38 @@ html,body{
 
 .stars{
   background-image:
-    radial-gradient(circle,rgba(255,255,255,.9) 1px,transparent 2px),
+    radial-gradient(circle,rgba(255,255,255,.95) 1px,transparent 2px),
     radial-gradient(circle,rgba(0,234,255,.75) 1px,transparent 2px);
   background-size:32px 32px,78px 78px;
   opacity:.28;
-  animation:stars 45s linear infinite;
+  animation:stars 46s linear infinite;
 }
 
 .grid{
-  opacity:.16;
+  opacity:.15;
   background:
     linear-gradient(rgba(0,234,255,.2) 1px,transparent 1px),
     linear-gradient(90deg,rgba(0,234,255,.2) 1px,transparent 1px);
-  background-size:52px 52px;
+  background-size:54px 54px;
 }
 
 .scan{
-  height:220px;
-  background:linear-gradient(180deg,transparent,rgba(0,234,255,.16),transparent);
+  height:230px;
+  background:linear-gradient(180deg,transparent,rgba(0,234,255,.17),transparent);
   animation:scanMove 6s linear infinite;
 }
 
 .fog{
   background:
-    radial-gradient(circle at 20% 25%,rgba(0,234,255,.12),transparent 28%),
-    radial-gradient(circle at 80% 60%,var(--soft),transparent 38%);
+    radial-gradient(circle at 18% 25%,rgba(0,234,255,.12),transparent 28%),
+    radial-gradient(circle at 82% 62%,var(--soft),transparent 38%);
   animation:fog 8s ease-in-out infinite;
 }
 
 .core-wrap{
   position:relative;
-  width:620px;
-  height:620px;
+  width:680px;
+  height:680px;
   display:grid;
   place-items:center;
 }
@@ -101,39 +103,28 @@ html,body{
   box-shadow:0 0 28px var(--soft), inset 0 0 24px rgba(0,234,255,.08);
 }
 
-.r1{width:250px;height:250px;animation:spin 10s linear infinite}
-.r2{width:350px;height:350px;border-style:dashed;opacity:.75;animation:spinReverse 18s linear infinite}
-.r3{width:470px;height:470px;border-color:rgba(0,234,255,.42);animation:spin 32s linear infinite}
-.r4{width:590px;height:590px;border-style:dashed;border-color:rgba(255,255,255,.16);animation:spinReverse 52s linear infinite}
-
-.platform{
-  position:absolute;
-  bottom:75px;
-  width:330px;
-  height:70px;
-  border-radius:50%;
-  border:2px solid rgba(0,234,255,.42);
-  box-shadow:0 0 45px rgba(0,234,255,.45), inset 0 0 30px var(--soft);
-  transform:rotateX(70deg);
-  animation:pulsePlatform 2.4s ease-in-out infinite;
-}
+.r1{width:255px;height:255px;animation:spin 10s linear infinite}
+.r2{width:360px;height:360px;border-style:dashed;opacity:.78;animation:spinReverse 18s linear infinite}
+.r3{width:485px;height:485px;border-color:rgba(0,234,255,.42);animation:spin 32s linear infinite}
+.r4{width:620px;height:620px;border-style:dashed;border-color:rgba(255,255,255,.16);animation:spinReverse 52s linear infinite}
 
 .orb{
   position:relative;
-  width:285px;
-  height:285px;
+  width:290px;
+  height:290px;
   border-radius:50%;
   display:grid;
   place-items:center;
   border:2px solid var(--core);
   background:
-    radial-gradient(circle,var(--soft),rgba(0,234,255,.09) 48%,rgba(0,0,0,.2) 75%);
+    radial-gradient(circle,var(--soft),rgba(0,234,255,.09) 48%,rgba(0,0,0,.24) 75%);
   box-shadow:
-    0 0 70px var(--soft),
-    0 0 120px rgba(0,234,255,.24),
-    inset 0 0 70px var(--soft);
+    0 0 76px var(--soft),
+    0 0 125px rgba(0,234,255,.26),
+    inset 0 0 76px var(--soft);
   overflow:hidden;
   animation:breathe 3.2s ease-in-out infinite;
+  z-index:10;
 }
 
 .orb:before,.orb:after{
@@ -145,16 +136,16 @@ html,body{
   opacity:.38;
 }
 
-.orb:before{transform:rotate(20deg) scaleX(.72);animation:spin 7s linear infinite}
-.orb:after{transform:rotate(-20deg) scaleY(.72);animation:spinReverse 11s linear infinite}
+.orb:before{transform:rotate(20deg) scaleX(.72);animation:innerA 7s linear infinite}
+.orb:after{transform:rotate(-20deg) scaleY(.72);animation:innerB 11s linear infinite}
 
 .logo{
   position:relative;
   z-index:5;
-  width:190px;
-  height:190px;
+  width:195px;
+  height:195px;
   object-fit:contain;
-  filter:drop-shadow(0 0 20px var(--core)) drop-shadow(0 0 46px rgba(0,234,255,.35));
+  filter:drop-shadow(0 0 20px var(--core)) drop-shadow(0 0 50px rgba(0,234,255,.38));
   animation:logoPulse 2.6s ease-in-out infinite;
 }
 
@@ -171,22 +162,35 @@ html,body{
   inset:0;
   z-index:8;
   background:
-    linear-gradient(120deg,transparent,rgba(255,255,255,.08),transparent),
-    radial-gradient(circle at 50% 40%,transparent 40%,rgba(0,0,0,.28) 90%);
+    linear-gradient(120deg,transparent,rgba(255,255,255,.09),transparent),
+    radial-gradient(circle at 50% 40%,transparent 40%,rgba(0,0,0,.3) 90%);
+}
+
+.platform{
+  position:absolute;
+  bottom:72px;
+  width:350px;
+  height:78px;
+  border-radius:50%;
+  border:2px solid rgba(0,234,255,.42);
+  box-shadow:0 0 48px rgba(0,234,255,.45), inset 0 0 34px var(--soft);
+  transform:rotateX(70deg);
+  animation:pulsePlatform 2.4s ease-in-out infinite;
 }
 
 .command-halo{
   position:absolute;
-  width:520px;
-  height:520px;
+  width:560px;
+  height:560px;
   border-radius:50%;
-  animation:haloFloat 5s ease-in-out infinite;
+  animation:haloDrift 20s linear infinite;
+  z-index:15;
 }
 
 .node{
   position:absolute;
-  width:72px;
-  height:72px;
+  width:82px;
+  height:82px;
   border-radius:50%;
   border:1px solid var(--core);
   background:rgba(1,10,24,.72);
@@ -198,63 +202,80 @@ html,body{
   box-shadow:0 0 22px var(--soft), inset 0 0 18px rgba(0,234,255,.09);
   backdrop-filter:blur(8px);
   transition:.22s ease;
-  font-size:9px;
   letter-spacing:1px;
+  animation:nodePulse 3.4s ease-in-out infinite;
+}
+
+.node.empty{
+  opacity:.52;
+  filter:grayscale(.45);
+  border-color:rgba(255,255,255,.25);
+}
+
+.node.live{
+  border-color:var(--green);
+  box-shadow:0 0 28px rgba(0,255,191,.38), inset 0 0 20px rgba(0,255,191,.12);
+}
+
+.node.warn{
+  border-color:var(--gold);
 }
 
 .node strong{
+  display:block;
   color:var(--core);
-  font-size:9px;
+  font-size:10px;
+  line-height:1;
 }
 
 .node span{
   display:block;
-  margin-top:3px;
-  font-size:9px;
+  margin-top:5px;
+  font-size:10px;
   color:#e9fcff;
 }
 
 .node:hover{
-  transform:scale(1.15);
-  box-shadow:0 0 34px var(--glow),0 0 70px rgba(0,234,255,.32),inset 0 0 24px var(--soft);
+  transform:scale(1.16);
+  box-shadow:0 0 38px var(--glow),0 0 80px rgba(0,234,255,.35),inset 0 0 26px var(--soft);
 }
 
 .n-qfn{left:50%;top:0;transform:translate(-50%,-50%)}
-.n-vault{right:45px;top:75px}
-.n-timeline{right:-30px;top:50%;transform:translateY(-50%)}
-.n-cert{right:45px;bottom:75px}
+.n-vault{right:50px;top:80px}
+.n-timeline{right:-34px;top:50%;transform:translateY(-50%)}
+.n-cert{right:50px;bottom:80px}
 .n-reports{left:50%;bottom:0;transform:translate(-50%,50%)}
-.n-learning{left:45px;bottom:75px}
-.n-mi8{left:-30px;top:50%;transform:translateY(-50%)}
-.n-dossier{left:45px;top:75px}
+.n-learning{left:50px;bottom:80px}
+.n-mi8{left:-34px;top:50%;transform:translateY(-50%)}
+.n-dossier{left:50px;top:80px}
 
-.n-qfn:hover{transform:translate(-50%,-50%) scale(1.15)}
-.n-timeline:hover,.n-mi8:hover{transform:translateY(-50%) scale(1.15)}
-.n-reports:hover{transform:translate(-50%,50%) scale(1.15)}
+.n-qfn:hover{transform:translate(-50%,-50%) scale(1.16)}
+.n-timeline:hover,.n-mi8:hover{transform:translateY(-50%) scale(1.16)}
+.n-reports:hover{transform:translate(-50%,50%) scale(1.16)}
 
 .tooltip{
   position:absolute;
   bottom:18px;
   left:50%;
   transform:translateX(-50%);
-  width:390px;
-  min-height:58px;
+  width:410px;
+  min-height:62px;
   padding:12px 18px;
   border-radius:18px;
   border:1px solid rgba(0,234,255,.35);
-  background:rgba(0,0,0,.55);
+  background:rgba(0,0,0,.58);
   color:#e9fcff;
   text-align:center;
   opacity:0;
   transition:.2s ease;
-  box-shadow:0 0 28px rgba(0,234,255,.18);
+  box-shadow:0 0 30px rgba(0,234,255,.2);
   backdrop-filter:blur(12px);
-  z-index:20;
+  z-index:30;
 }
 
-.tooltip.active{opacity:1;bottom:26px}
+.tooltip.active{opacity:1;bottom:28px}
 .tooltip strong{display:block;color:var(--core);letter-spacing:2px;margin-bottom:5px}
-.tooltip span{font-size:12px}
+.tooltip span{font-size:12px;line-height:1.45}
 
 .status{
   position:absolute;
@@ -269,33 +290,38 @@ html,body{
   background:rgba(0,0,0,.52);
   color:#e9fcff;
   font-size:10px;
-  z-index:30;
+  z-index:40;
 }
 
 .status strong{color:var(--core)}
 
 .mode-speaking .logo{animation:talk .45s ease-in-out infinite}
 .mode-speaking .r1,.mode-speaking .r2,.mode-speaking .r3{animation-duration:3s;border-color:var(--green)}
-.mode-listening .r1,.mode-listening .r2{border-color:var(--cyan);box-shadow:0 0 42px rgba(0,234,255,.75)}
+.mode-listening .r1,.mode-listening .r2{border-color:var(--cyan);box-shadow:0 0 44px rgba(0,234,255,.75)}
 .mode-thinking .r1,.mode-thinking .r2,.mode-thinking .r3{animation-duration:4s}
 .mode-error .orb,.mode-error .ring{border-color:var(--red)}
 
 @keyframes spin{to{transform:rotate(360deg)}}
 @keyframes spinReverse{to{transform:rotate(-360deg)}}
+@keyframes innerA{from{transform:rotate(20deg) scaleX(.72)}to{transform:rotate(380deg) scaleX(.72)}}
+@keyframes innerB{from{transform:rotate(-20deg) scaleY(.72)}to{transform:rotate(-380deg) scaleY(.72)}}
 @keyframes breathe{0%,100%{transform:scale(1)}50%{transform:scale(1.035)}}
-@keyframes logoPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.055)}}
-@keyframes talk{0%,100%{transform:scale(1)}50%{transform:scale(1.12)}}
+@keyframes logoPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.058)}}
+@keyframes talk{0%,100%{transform:scale(1)}50%{transform:scale(1.13)}}
 @keyframes holo{from{transform:translateY(-100%)}to{transform:translateY(100%)}}
 @keyframes pulsePlatform{0%,100%{transform:rotateX(70deg) scale(.95)}50%{transform:rotateX(70deg) scale(1.06)}}
-@keyframes haloFloat{0%,100%{filter:drop-shadow(0 0 14px var(--soft))}50%{filter:drop-shadow(0 0 32px var(--glow))}}
+@keyframes haloDrift{from{filter:drop-shadow(0 0 14px var(--soft))}50%{filter:drop-shadow(0 0 32px var(--glow))}to{filter:drop-shadow(0 0 14px var(--soft))}}
+@keyframes nodePulse{0%,100%{box-shadow:0 0 18px var(--soft), inset 0 0 16px rgba(0,234,255,.08)}50%{box-shadow:0 0 34px var(--soft), inset 0 0 24px rgba(0,234,255,.16)}}
 @keyframes stars{from{background-position:0 0,0 0}to{background-position:600px 600px,-500px 420px}}
 @keyframes scanMove{from{transform:translateY(-240px)}to{transform:translateY(1000px)}}
 @keyframes fog{0%,100%{transform:translateX(0)}50%{transform:translateX(18px)}}
 
 @media(max-width:700px){
   .core-wrap{width:100%;height:100vh}
-  .command-halo{width:340px;height:340px}
-  .node{width:58px;height:58px;font-size:8px}
+  .command-halo{width:350px;height:350px}
+  .node{width:60px;height:60px}
+  .node strong{font-size:8px}
+  .node span{font-size:8px}
   .orb{width:225px;height:225px}
   .logo{width:150px;height:150px}
   .r3,.r4{display:none}
@@ -307,10 +333,10 @@ html,body{
 
 <body>
 <main id="app" class="mode-idle claimant-verified">
-  <div class="stars"></div>
-  <div class="grid"></div>
-  <div class="scan"></div>
-  <div class="fog"></div>
+  <div class="layer stars"></div>
+  <div class="layer grid"></div>
+  <div class="layer scan"></div>
+  <div class="layer fog"></div>
 
   <section class="core-wrap">
     <div class="ring r1"></div>
@@ -368,31 +394,84 @@ const nodes = {
   DOSSIER: document.getElementById("dossier")
 };
 
+const buttonNodes = {
+  QFN: document.querySelector('[data-module="QFN"]'),
+  VAULT: document.querySelector('[data-module="VAULT"]'),
+  TIMELINE: document.querySelector('[data-module="TIMELINE"]'),
+  CERTIFICATES: document.querySelector('[data-module="CERTIFICATES"]'),
+  REPORTS: document.querySelector('[data-module="REPORTS"]'),
+  LEARNING: document.querySelector('[data-module="LEARNING"]'),
+  MI8: document.querySelector('[data-module="MI8"]'),
+  DOSSIER: document.querySelector('[data-module="DOSSIER"]')
+};
+
 const tooltip = document.getElementById("tooltip");
 const tipTitle = document.getElementById("tipTitle");
 const tipBody = document.getElementById("tipBody");
 
 let deck = {};
 
-function clean(v,f="--"){return v===undefined||v===null||v===""?f:String(v)}
+function clean(v,f="--"){
+  return v===undefined||v===null||v===""?f:String(v);
+}
+
+function numeric(v){
+  const n = Number(v);
+  return Number.isFinite(n) ? n : 0;
+}
+
+function setLiveState(module, value){
+  const node = buttonNodes[module];
+  if(!node) return;
+
+  node.classList.remove("live","empty","warn");
+
+  if(module === "DOSSIER"){
+    node.classList.add("live");
+    return;
+  }
+
+  if(module === "QFN"){
+    const active = String(value || "").toLowerCase();
+    if(active.includes("active") || active.includes("ready") || active.includes("verified")) node.classList.add("live");
+    else if(active.includes("pending") || active.includes("not")) node.classList.add("warn");
+    else node.classList.add("empty");
+    return;
+  }
+
+  if(numeric(value) > 0) node.classList.add("live");
+  else node.classList.add("empty");
+}
 
 function setMode(mode="idle", label=""){
   app.classList.remove("mode-idle","mode-speaking","mode-listening","mode-thinking","mode-error","mode-success","mode-verified");
   app.classList.add("mode-"+mode);
+
   statusText.textContent =
     mode==="speaking"?"SPEAKING":
     mode==="listening"?"LISTENING":
     mode==="thinking"?"THINKING":
     mode==="error"?"ERROR":
     mode==="verified"?"ONLINE":"READY";
+
   modeText.textContent = label || mode.toUpperCase();
 }
 
 function setClass(data={}){
   const v = String(data.claimantLevel || data.status || "Observer").toLowerCase();
-  app.classList.remove("claimant-observer","claimant-participant","claimant-active","claimant-verified","claimant-advanced","claimant-command","claimant-alert");
+
+  app.classList.remove(
+    "claimant-observer",
+    "claimant-participant",
+    "claimant-active",
+    "claimant-verified",
+    "claimant-advanced",
+    "claimant-command",
+    "claimant-alert"
+  );
 
   let c="claimant-observer";
+
   if(v.includes("alert")||v.includes("risk")) c="claimant-alert";
   else if(v.includes("command")||v.includes("chief")||v.includes("root")) c="claimant-command";
   else if(v.includes("advanced")||v.includes("ultimate")) c="claimant-advanced";
@@ -405,6 +484,7 @@ function setClass(data={}){
 
 function setDeck(data={}){
   deck=data||{};
+
   nodes.QFN.textContent = clean(deck.qfnStatus || deck.qfnTier);
   nodes.VAULT.textContent = clean(deck.vaultCount,"0");
   nodes.TIMELINE.textContent = clean(deck.timelineCount,"0");
@@ -413,11 +493,22 @@ function setDeck(data={}){
   nodes.LEARNING.textContent = clean(deck.learningCount,"0");
   nodes.MI8.textContent = clean(deck.mi8Count,"0");
   nodes.DOSSIER.textContent = clean(deck.dossierStatus,"READY");
+
   memoryText.textContent = clean(deck.memoryStatus,"ONLINE");
+
+  setLiveState("QFN", deck.qfnStatus || deck.qfnTier);
+  setLiveState("VAULT", deck.vaultCount);
+  setLiveState("TIMELINE", deck.timelineCount);
+  setLiveState("CERTIFICATES", deck.certificateCount);
+  setLiveState("REPORTS", deck.reportCount);
+  setLiveState("LEARNING", deck.learningCount);
+  setLiveState("MI8", deck.mi8Count);
+  setLiveState("DOSSIER", deck.dossierStatus);
 }
 
 function info(module){
   const d=deck||{};
+
   return {
     QFN:`Tier: ${clean(d.qfnTier)} | Status: ${clean(d.qfnStatus)} | Units: ${clean(d.unitBalance,"0")}`,
     VAULT:`${clean(d.vaultCount,"0")} vault file(s) connected.`,
@@ -425,7 +516,7 @@ function info(module){
     CERTIFICATES:`${clean(d.certificateCount,"0")} certificate record(s) connected.`,
     REPORTS:`${clean(d.reportCount,"0")} report record(s) connected.`,
     LEARNING:`${clean(d.learningCount,"0")} learning record(s) connected.`,
-    MI8:`${clean(d.mi8Count,"0")} MI8 record(s) connected.`,
+    MI8:`${clean(d.mi8Count,"0")} MI8 intelligence record(s) connected.`,
     DOSSIER:`Build the full claimant intelligence dossier.`
   }[module] || "Command module ready.";
 }
@@ -451,12 +542,13 @@ document.querySelectorAll(".node").forEach(btn=>{
 
 window.addEventListener("message",event=>{
   const msg=event.data||{};
+
   if(msg.type==="capricorn:setMode") setMode(msg.mode,msg.label);
   if(msg.type==="capricorn:setClaimantClass") setClass(msg);
   if(msg.type==="capricorn:setCommandDeck") setDeck(msg.data||{});
 });
 
-setMode("idle","COMMAND DECK V2");
+setMode("idle","COMMAND DECK V3");
 </script>
 </body>
 </html>
