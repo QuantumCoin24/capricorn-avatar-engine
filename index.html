@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Capricorn OS Core Engine</title>
+  <title>Capricorn OS Command Deck</title>
   <link rel="stylesheet" href="./style.css"/>
 </head>
 
@@ -19,6 +19,33 @@
       <div class="ring ring-2"></div>
       <div class="ring ring-3"></div>
       <div class="ring ring-4"></div>
+
+      <div id="commandDeck" class="command-deck">
+        <button class="command-node node-qfn" data-module="QFN">
+          <strong>QFN</strong><span id="nodeQfn">--</span>
+        </button>
+        <button class="command-node node-vault" data-module="VAULT">
+          <strong>VAULT</strong><span id="nodeVault">--</span>
+        </button>
+        <button class="command-node node-timeline" data-module="TIMELINE">
+          <strong>TIMELINE</strong><span id="nodeTimeline">--</span>
+        </button>
+        <button class="command-node node-certificates" data-module="CERTIFICATES">
+          <strong>CERTIFICATES</strong><span id="nodeCertificates">--</span>
+        </button>
+        <button class="command-node node-reports" data-module="REPORTS">
+          <strong>REPORTS</strong><span id="nodeReports">--</span>
+        </button>
+        <button class="command-node node-learning" data-module="LEARNING">
+          <strong>LEARNING</strong><span id="nodeLearning">--</span>
+        </button>
+        <button class="command-node node-mi8" data-module="MI8">
+          <strong>MI8</strong><span id="nodeMi8">--</span>
+        </button>
+        <button class="command-node node-dossier" data-module="DOSSIER">
+          <strong>DOSSIER</strong><span id="nodeDossier">READY</span>
+        </button>
+      </div>
 
       <div class="radar-pulse"></div>
       <div class="floor-platform"></div>
@@ -43,8 +70,13 @@
 
         <div class="core-title">
           <strong>CAPRICORN OS</strong>
-          <span id="claimantStateText">CENTRAL INTELLIGENCE CORE</span>
+          <span id="claimantStateText">COMMAND DECK ONLINE</span>
         </div>
+      </div>
+
+      <div id="moduleTooltip" class="module-tooltip">
+        <strong id="tooltipTitle">COMMAND</strong>
+        <span id="tooltipBody">Hover a module.</span>
       </div>
 
       <div class="waveform" aria-hidden="true">
@@ -56,7 +88,7 @@
         <div><strong>STATUS:</strong> <span id="statusText">IDLE</span></div>
         <div><strong>VOICE:</strong> <span id="voiceText">READY</span></div>
         <div><strong>MEMORY:</strong> <span id="memoryText">ONLINE</span></div>
-        <div><strong>MODE:</strong> <span id="modeText">STANDBY</span></div>
+        <div><strong>MODE:</strong> <span id="modeText">COMMAND</span></div>
       </div>
     </section>
   </main>
