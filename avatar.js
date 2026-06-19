@@ -21,35 +21,38 @@ const validModes = [
 
 const claimantClasses = [
   "claimant-observer",
-  "claimant-verified",
+  "claimant-participant",
   "claimant-active",
+  "claimant-verified",
+  "claimant-advanced",
   "claimant-command",
   "claimant-alert"
 ];
 
 let currentMode = "idle";
+let currentClaimantClass = "claimant-verified";
 let idleTick = 0;
 let mouseX = 0;
 let mouseY = 0;
 
 function setClaimantClass(value = "") {
-  const raw = String(value || "").toLowerCase();
+  const raw = String(value || "").toLowerCase().trim();
 
   claimantClasses.forEach((name) => {
     app.classList.remove(name);
   });
 
   let selected = "claimant-verified";
-  let label = "CENTRAL INTELLIGENCE CORE";
+  let label = "VERIFIED CLAIMANT CORE";
 
-  if (raw.includes("observer") || raw.includes("participant")) {
+  if (raw.includes("observer")) {
     selected = "claimant-observer";
     label = "OBSERVER CORE";
   }
 
-  if (raw.includes("verified")) {
-    selected = "claimant-verified";
-    label = "VERIFIED CLAIMANT CORE";
+  if (raw.includes("participant")) {
+    selected = "claimant-participant";
+    label = "PARTICIPANT CORE";
   }
 
   if (raw.includes("active")) {
@@ -57,26 +60,50 @@ function setClaimantClass(value = "") {
     label = "ACTIVE CLAIMANT CORE";
   }
 
+  if (raw.includes("verified")) {
+    selected = "claimant-verified";
+    label = "VERIFIED CLAIMANT CORE";
+  }
+
+  if (raw.includes("advanced")) {
+    selected = "claimant-advanced";
+    label = "ADVANCED CLAIMANT CORE";
+  }
+
   if (
     raw.includes("command") ||
     raw.includes("commander") ||
     raw.includes("chief") ||
-    raw.includes("executive")
+    raw.includes("executive") ||
+    raw.includes("master")
   ) {
     selected = "claimant-command";
     label = "COMMAND CORE";
   }
 
-  if (raw.includes("alert") || raw.includes("risk") || raw.includes("error")) {
+  if (
+    raw.includes("alert") ||
+    raw.includes("risk") ||
+    raw.includes("error") ||
+    raw.includes("blocked")
+  ) {
     selected = "claimant-alert";
     label = "ALERT CORE";
   }
 
+  currentClaimantClass = selected;
   app.classList.add(selected);
 
   if (claimantStateText) {
     claimantStateText.textContent = label;
   }
+
+  window.parent?.postMessage({
+    source: "capricorn-avatar",
+    type: "claimantClassChanged",
+    claimantClass: selected,
+    label
+  }, "*");
 }
 
 function setMode(mode = "idle", label = "") {
@@ -124,7 +151,8 @@ function setMode(mode = "idle", label = "") {
     source: "capricorn-avatar",
     type: "modeChanged",
     mode,
-    label: display
+    label: display,
+    claimantClass: currentClaimantClass
   }, "*");
 }
 
@@ -170,6 +198,11 @@ function idleLife() {
       coreCard.style.marginLeft = `${swayX}px`;
       coreCard.style.marginTop = `${swayY}px`;
     }
+
+    if (coreLogo && currentMode !== "speaking") {
+      const pulse = 1 + Math.sin(idleTick / 34) * 0.015;
+      coreLogo.style.transform = `scale(${pulse})`;
+    }
   }
 
   requestAnimationFrame(idleLife);
@@ -205,11 +238,11 @@ function speakingPulse() {
   if (currentMode !== "speaking") return;
 
   if (coreLogo) {
-    const scale = 1.03 + Math.random() * 0.06;
+    const scale = 1.04 + Math.random() * 0.08;
     coreLogo.style.transform = `scale(${scale})`;
   }
 
-  setTimeout(speakingPulse, 120);
+  setTimeout(speakingPulse, 110);
 }
 
 function listeningPulse() {
