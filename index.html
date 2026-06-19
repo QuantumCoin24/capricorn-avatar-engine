@@ -1,98 +1,462 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Capricorn OS Command Deck</title>
-  <link rel="stylesheet" href="./style.css"/>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Capricorn OS Core Reactor</title>
+
+<style>
+:root{
+  --cyan:#00eaff;
+  --gold:#ffe27a;
+  --green:#00ffbf;
+  --red:#ff4747;
+  --core:var(--gold);
+  --soft:rgba(255,226,122,.22);
+  --glow:rgba(255,226,122,.8);
+}
+
+*{box-sizing:border-box}
+
+html,body{
+  margin:0;
+  width:100%;
+  height:100%;
+  overflow:hidden;
+  background:transparent;
+  font-family:Arial,Helvetica,sans-serif;
+}
+
+#app{
+  position:relative;
+  width:100%;
+  height:100vh;
+  min-height:520px;
+  display:grid;
+  place-items:center;
+  overflow:hidden;
+  color:white;
+  background:
+    radial-gradient(circle at 50% 50%, var(--soft), transparent 34%),
+    radial-gradient(circle at 50% 20%, rgba(0,234,255,.16), transparent 32%),
+    linear-gradient(145deg,#020714,#04182e,#01030a);
+}
+
+.claimant-observer{--core:#3ea6ff;--soft:rgba(62,166,255,.22);--glow:rgba(62,166,255,.8)}
+.claimant-participant{--core:#00eaff;--soft:rgba(0,234,255,.22);--glow:rgba(0,234,255,.8)}
+.claimant-active{--core:#00ffbf;--soft:rgba(0,255,191,.22);--glow:rgba(0,255,191,.8)}
+.claimant-verified{--core:#ffe27a;--soft:rgba(255,226,122,.22);--glow:rgba(255,226,122,.8)}
+.claimant-advanced{--core:#e8f5ff;--soft:rgba(232,245,255,.24);--glow:rgba(232,245,255,.9)}
+.claimant-command{--core:#fff4c7;--soft:rgba(255,244,199,.28);--glow:rgba(255,244,199,1)}
+.claimant-alert{--core:#ff4747;--soft:rgba(255,71,71,.24);--glow:rgba(255,71,71,.8)}
+
+.stars,.grid,.scan,.fog{
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+}
+
+.stars{
+  background-image:
+    radial-gradient(circle,rgba(255,255,255,.9) 1px,transparent 2px),
+    radial-gradient(circle,rgba(0,234,255,.75) 1px,transparent 2px);
+  background-size:32px 32px,78px 78px;
+  opacity:.28;
+  animation:stars 45s linear infinite;
+}
+
+.grid{
+  opacity:.16;
+  background:
+    linear-gradient(rgba(0,234,255,.2) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(0,234,255,.2) 1px,transparent 1px);
+  background-size:52px 52px;
+}
+
+.scan{
+  height:220px;
+  background:linear-gradient(180deg,transparent,rgba(0,234,255,.16),transparent);
+  animation:scanMove 6s linear infinite;
+}
+
+.fog{
+  background:
+    radial-gradient(circle at 20% 25%,rgba(0,234,255,.12),transparent 28%),
+    radial-gradient(circle at 80% 60%,var(--soft),transparent 38%);
+  animation:fog 8s ease-in-out infinite;
+}
+
+.core-wrap{
+  position:relative;
+  width:620px;
+  height:620px;
+  display:grid;
+  place-items:center;
+}
+
+.ring{
+  position:absolute;
+  border-radius:50%;
+  border:1px solid var(--core);
+  box-shadow:0 0 28px var(--soft), inset 0 0 24px rgba(0,234,255,.08);
+}
+
+.r1{width:250px;height:250px;animation:spin 10s linear infinite}
+.r2{width:350px;height:350px;border-style:dashed;opacity:.75;animation:spinReverse 18s linear infinite}
+.r3{width:470px;height:470px;border-color:rgba(0,234,255,.42);animation:spin 32s linear infinite}
+.r4{width:590px;height:590px;border-style:dashed;border-color:rgba(255,255,255,.16);animation:spinReverse 52s linear infinite}
+
+.platform{
+  position:absolute;
+  bottom:75px;
+  width:330px;
+  height:70px;
+  border-radius:50%;
+  border:2px solid rgba(0,234,255,.42);
+  box-shadow:0 0 45px rgba(0,234,255,.45), inset 0 0 30px var(--soft);
+  transform:rotateX(70deg);
+  animation:pulsePlatform 2.4s ease-in-out infinite;
+}
+
+.orb{
+  position:relative;
+  width:285px;
+  height:285px;
+  border-radius:50%;
+  display:grid;
+  place-items:center;
+  border:2px solid var(--core);
+  background:
+    radial-gradient(circle,var(--soft),rgba(0,234,255,.09) 48%,rgba(0,0,0,.2) 75%);
+  box-shadow:
+    0 0 70px var(--soft),
+    0 0 120px rgba(0,234,255,.24),
+    inset 0 0 70px var(--soft);
+  overflow:hidden;
+  animation:breathe 3.2s ease-in-out infinite;
+}
+
+.orb:before,.orb:after{
+  content:"";
+  position:absolute;
+  inset:22px;
+  border-radius:50%;
+  border:1px solid var(--core);
+  opacity:.38;
+}
+
+.orb:before{transform:rotate(20deg) scaleX(.72);animation:spin 7s linear infinite}
+.orb:after{transform:rotate(-20deg) scaleY(.72);animation:spinReverse 11s linear infinite}
+
+.logo{
+  position:relative;
+  z-index:5;
+  width:190px;
+  height:190px;
+  object-fit:contain;
+  filter:drop-shadow(0 0 20px var(--core)) drop-shadow(0 0 46px rgba(0,234,255,.35));
+  animation:logoPulse 2.6s ease-in-out infinite;
+}
+
+.holo{
+  position:absolute;
+  inset:0;
+  background:linear-gradient(180deg,transparent,rgba(0,234,255,.2),transparent);
+  animation:holo 2.7s linear infinite;
+  z-index:7;
+}
+
+.glass{
+  position:absolute;
+  inset:0;
+  z-index:8;
+  background:
+    linear-gradient(120deg,transparent,rgba(255,255,255,.08),transparent),
+    radial-gradient(circle at 50% 40%,transparent 40%,rgba(0,0,0,.28) 90%);
+}
+
+.command-halo{
+  position:absolute;
+  width:520px;
+  height:520px;
+  border-radius:50%;
+  animation:haloFloat 5s ease-in-out infinite;
+}
+
+.node{
+  position:absolute;
+  width:72px;
+  height:72px;
+  border-radius:50%;
+  border:1px solid var(--core);
+  background:rgba(1,10,24,.72);
+  color:white;
+  display:grid;
+  place-items:center;
+  text-align:center;
+  cursor:pointer;
+  box-shadow:0 0 22px var(--soft), inset 0 0 18px rgba(0,234,255,.09);
+  backdrop-filter:blur(8px);
+  transition:.22s ease;
+  font-size:9px;
+  letter-spacing:1px;
+}
+
+.node strong{
+  color:var(--core);
+  font-size:9px;
+}
+
+.node span{
+  display:block;
+  margin-top:3px;
+  font-size:9px;
+  color:#e9fcff;
+}
+
+.node:hover{
+  transform:scale(1.15);
+  box-shadow:0 0 34px var(--glow),0 0 70px rgba(0,234,255,.32),inset 0 0 24px var(--soft);
+}
+
+.n-qfn{left:50%;top:0;transform:translate(-50%,-50%)}
+.n-vault{right:45px;top:75px}
+.n-timeline{right:-30px;top:50%;transform:translateY(-50%)}
+.n-cert{right:45px;bottom:75px}
+.n-reports{left:50%;bottom:0;transform:translate(-50%,50%)}
+.n-learning{left:45px;bottom:75px}
+.n-mi8{left:-30px;top:50%;transform:translateY(-50%)}
+.n-dossier{left:45px;top:75px}
+
+.n-qfn:hover{transform:translate(-50%,-50%) scale(1.15)}
+.n-timeline:hover,.n-mi8:hover{transform:translateY(-50%) scale(1.15)}
+.n-reports:hover{transform:translate(-50%,50%) scale(1.15)}
+
+.tooltip{
+  position:absolute;
+  bottom:18px;
+  left:50%;
+  transform:translateX(-50%);
+  width:390px;
+  min-height:58px;
+  padding:12px 18px;
+  border-radius:18px;
+  border:1px solid rgba(0,234,255,.35);
+  background:rgba(0,0,0,.55);
+  color:#e9fcff;
+  text-align:center;
+  opacity:0;
+  transition:.2s ease;
+  box-shadow:0 0 28px rgba(0,234,255,.18);
+  backdrop-filter:blur(12px);
+  z-index:20;
+}
+
+.tooltip.active{opacity:1;bottom:26px}
+.tooltip strong{display:block;color:var(--core);letter-spacing:2px;margin-bottom:5px}
+.tooltip span{font-size:12px}
+
+.status{
+  position:absolute;
+  bottom:4px;
+  left:50%;
+  transform:translateX(-50%);
+  display:flex;
+  gap:10px;
+  padding:8px 14px;
+  border-radius:999px;
+  border:1px solid rgba(0,234,255,.28);
+  background:rgba(0,0,0,.52);
+  color:#e9fcff;
+  font-size:10px;
+  z-index:30;
+}
+
+.status strong{color:var(--core)}
+
+.mode-speaking .logo{animation:talk .45s ease-in-out infinite}
+.mode-speaking .r1,.mode-speaking .r2,.mode-speaking .r3{animation-duration:3s;border-color:var(--green)}
+.mode-listening .r1,.mode-listening .r2{border-color:var(--cyan);box-shadow:0 0 42px rgba(0,234,255,.75)}
+.mode-thinking .r1,.mode-thinking .r2,.mode-thinking .r3{animation-duration:4s}
+.mode-error .orb,.mode-error .ring{border-color:var(--red)}
+
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes spinReverse{to{transform:rotate(-360deg)}}
+@keyframes breathe{0%,100%{transform:scale(1)}50%{transform:scale(1.035)}}
+@keyframes logoPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.055)}}
+@keyframes talk{0%,100%{transform:scale(1)}50%{transform:scale(1.12)}}
+@keyframes holo{from{transform:translateY(-100%)}to{transform:translateY(100%)}}
+@keyframes pulsePlatform{0%,100%{transform:rotateX(70deg) scale(.95)}50%{transform:rotateX(70deg) scale(1.06)}}
+@keyframes haloFloat{0%,100%{filter:drop-shadow(0 0 14px var(--soft))}50%{filter:drop-shadow(0 0 32px var(--glow))}}
+@keyframes stars{from{background-position:0 0,0 0}to{background-position:600px 600px,-500px 420px}}
+@keyframes scanMove{from{transform:translateY(-240px)}to{transform:translateY(1000px)}}
+@keyframes fog{0%,100%{transform:translateX(0)}50%{transform:translateX(18px)}}
+
+@media(max-width:700px){
+  .core-wrap{width:100%;height:100vh}
+  .command-halo{width:340px;height:340px}
+  .node{width:58px;height:58px;font-size:8px}
+  .orb{width:225px;height:225px}
+  .logo{width:150px;height:150px}
+  .r3,.r4{display:none}
+  .tooltip{display:none}
+  .status{width:calc(100% - 20px);justify-content:center;flex-wrap:wrap;border-radius:16px}
+}
+</style>
 </head>
 
 <body>
-  <main id="capricorn-avatar-app" class="mode-idle claimant-verified">
-    <div class="starfield"></div>
-    <div class="deep-grid"></div>
-    <div class="scanline"></div>
-    <div class="energy-fog"></div>
+<main id="app" class="mode-idle claimant-verified">
+  <div class="stars"></div>
+  <div class="grid"></div>
+  <div class="scan"></div>
+  <div class="fog"></div>
 
-    <section class="avatar-core">
-      <div class="ring ring-1"></div>
-      <div class="ring ring-2"></div>
-      <div class="ring ring-3"></div>
-      <div class="ring ring-4"></div>
+  <section class="core-wrap">
+    <div class="ring r1"></div>
+    <div class="ring r2"></div>
+    <div class="ring r3"></div>
+    <div class="ring r4"></div>
 
-      <div id="commandDeck" class="command-deck">
-        <button class="command-node node-qfn" data-module="QFN">
-          <strong>QFN</strong><span id="nodeQfn">--</span>
-        </button>
-        <button class="command-node node-vault" data-module="VAULT">
-          <strong>VAULT</strong><span id="nodeVault">--</span>
-        </button>
-        <button class="command-node node-timeline" data-module="TIMELINE">
-          <strong>TIMELINE</strong><span id="nodeTimeline">--</span>
-        </button>
-        <button class="command-node node-certificates" data-module="CERTIFICATES">
-          <strong>CERTIFICATES</strong><span id="nodeCertificates">--</span>
-        </button>
-        <button class="command-node node-reports" data-module="REPORTS">
-          <strong>REPORTS</strong><span id="nodeReports">--</span>
-        </button>
-        <button class="command-node node-learning" data-module="LEARNING">
-          <strong>LEARNING</strong><span id="nodeLearning">--</span>
-        </button>
-        <button class="command-node node-mi8" data-module="MI8">
-          <strong>MI8</strong><span id="nodeMi8">--</span>
-        </button>
-        <button class="command-node node-dossier" data-module="DOSSIER">
-          <strong>DOSSIER</strong><span id="nodeDossier">READY</span>
-        </button>
-      </div>
+    <div class="command-halo">
+      <button class="node n-qfn" data-module="QFN"><div><strong>QFN</strong><span id="qfn">--</span></div></button>
+      <button class="node n-vault" data-module="VAULT"><div><strong>VAULT</strong><span id="vault">--</span></div></button>
+      <button class="node n-timeline" data-module="TIMELINE"><div><strong>TIME</strong><span id="timeline">--</span></div></button>
+      <button class="node n-cert" data-module="CERTIFICATES"><div><strong>CERT</strong><span id="cert">--</span></div></button>
+      <button class="node n-reports" data-module="REPORTS"><div><strong>REPORT</strong><span id="reports">--</span></div></button>
+      <button class="node n-learning" data-module="LEARNING"><div><strong>LEARN</strong><span id="learning">--</span></div></button>
+      <button class="node n-mi8" data-module="MI8"><div><strong>MI8</strong><span id="mi8">--</span></div></button>
+      <button class="node n-dossier" data-module="DOSSIER"><div><strong>DOSSIER</strong><span id="dossier">READY</span></div></button>
+    </div>
 
-      <div class="radar-pulse"></div>
-      <div class="floor-platform"></div>
+    <div class="platform"></div>
 
-      <div class="core-card" id="coreCard">
-        <div class="core-orb">
-          <div class="core-glow"></div>
-          <div class="construction-ring"></div>
-          <div class="construction-line line-a"></div>
-          <div class="construction-line line-b"></div>
+    <div class="orb">
+      <img class="logo" src="https://static.wixstatic.com/media/c1955d_404918e0c6ca4c8b8b8ac8680b004761~mv2.png" />
+      <div class="holo"></div>
+      <div class="glass"></div>
+    </div>
 
-          <img
-            id="coreLogo"
-            class="core-logo"
-            src="https://static.wixstatic.com/media/c1955d_404918e0c6ca4c8b8b8ac8680b004761~mv2.png"
-            alt="Capricorn OS Core"
-          />
+    <div id="tooltip" class="tooltip">
+      <strong id="tipTitle">CAPRICORN</strong>
+      <span id="tipBody">Command Deck Ready.</span>
+    </div>
 
-          <div class="core-scan"></div>
-          <div class="core-glass"></div>
-        </div>
+    <div class="status">
+      <div><strong>STATUS:</strong> <span id="statusText">ONLINE</span></div>
+      <div><strong>VOICE:</strong> <span id="voiceText">READY</span></div>
+      <div><strong>MEMORY:</strong> <span id="memoryText">ONLINE</span></div>
+      <div><strong>MODE:</strong> <span id="modeText">CORE</span></div>
+    </div>
+  </section>
+</main>
 
-        <div class="core-title">
-          <strong>CAPRICORN OS</strong>
-          <span id="claimantStateText">COMMAND DECK ONLINE</span>
-        </div>
-      </div>
+<script>
+const app = document.getElementById("app");
+const statusText = document.getElementById("statusText");
+const modeText = document.getElementById("modeText");
+const memoryText = document.getElementById("memoryText");
 
-      <div id="moduleTooltip" class="module-tooltip">
-        <strong id="tooltipTitle">COMMAND</strong>
-        <span id="tooltipBody">Hover a module.</span>
-      </div>
+const nodes = {
+  QFN: document.getElementById("qfn"),
+  VAULT: document.getElementById("vault"),
+  TIMELINE: document.getElementById("timeline"),
+  CERTIFICATES: document.getElementById("cert"),
+  REPORTS: document.getElementById("reports"),
+  LEARNING: document.getElementById("learning"),
+  MI8: document.getElementById("mi8"),
+  DOSSIER: document.getElementById("dossier")
+};
 
-      <div class="waveform" aria-hidden="true">
-        <span></span><span></span><span></span><span></span><span></span>
-        <span></span><span></span><span></span><span></span><span></span>
-      </div>
+const tooltip = document.getElementById("tooltip");
+const tipTitle = document.getElementById("tipTitle");
+const tipBody = document.getElementById("tipBody");
 
-      <div class="status-strip">
-        <div><strong>STATUS:</strong> <span id="statusText">IDLE</span></div>
-        <div><strong>VOICE:</strong> <span id="voiceText">READY</span></div>
-        <div><strong>MEMORY:</strong> <span id="memoryText">ONLINE</span></div>
-        <div><strong>MODE:</strong> <span id="modeText">COMMAND</span></div>
-      </div>
-    </section>
-  </main>
+let deck = {};
 
-  <script src="./avatar.js"></script>
+function clean(v,f="--"){return v===undefined||v===null||v===""?f:String(v)}
+
+function setMode(mode="idle", label=""){
+  app.classList.remove("mode-idle","mode-speaking","mode-listening","mode-thinking","mode-error","mode-success","mode-verified");
+  app.classList.add("mode-"+mode);
+  statusText.textContent =
+    mode==="speaking"?"SPEAKING":
+    mode==="listening"?"LISTENING":
+    mode==="thinking"?"THINKING":
+    mode==="error"?"ERROR":
+    mode==="verified"?"ONLINE":"READY";
+  modeText.textContent = label || mode.toUpperCase();
+}
+
+function setClass(data={}){
+  const v = String(data.claimantLevel || data.status || "Observer").toLowerCase();
+  app.classList.remove("claimant-observer","claimant-participant","claimant-active","claimant-verified","claimant-advanced","claimant-command","claimant-alert");
+
+  let c="claimant-observer";
+  if(v.includes("alert")||v.includes("risk")) c="claimant-alert";
+  else if(v.includes("command")||v.includes("chief")||v.includes("root")) c="claimant-command";
+  else if(v.includes("advanced")||v.includes("ultimate")) c="claimant-advanced";
+  else if(v.includes("verified")) c="claimant-verified";
+  else if(v.includes("active")) c="claimant-active";
+  else if(v.includes("participant")) c="claimant-participant";
+
+  app.classList.add(c);
+}
+
+function setDeck(data={}){
+  deck=data||{};
+  nodes.QFN.textContent = clean(deck.qfnStatus || deck.qfnTier);
+  nodes.VAULT.textContent = clean(deck.vaultCount,"0");
+  nodes.TIMELINE.textContent = clean(deck.timelineCount,"0");
+  nodes.CERTIFICATES.textContent = clean(deck.certificateCount,"0");
+  nodes.REPORTS.textContent = clean(deck.reportCount,"0");
+  nodes.LEARNING.textContent = clean(deck.learningCount,"0");
+  nodes.MI8.textContent = clean(deck.mi8Count,"0");
+  nodes.DOSSIER.textContent = clean(deck.dossierStatus,"READY");
+  memoryText.textContent = clean(deck.memoryStatus,"ONLINE");
+}
+
+function info(module){
+  const d=deck||{};
+  return {
+    QFN:`Tier: ${clean(d.qfnTier)} | Status: ${clean(d.qfnStatus)} | Units: ${clean(d.unitBalance,"0")}`,
+    VAULT:`${clean(d.vaultCount,"0")} vault file(s) connected.`,
+    TIMELINE:`${clean(d.timelineCount,"0")} timeline record(s) connected.`,
+    CERTIFICATES:`${clean(d.certificateCount,"0")} certificate record(s) connected.`,
+    REPORTS:`${clean(d.reportCount,"0")} report record(s) connected.`,
+    LEARNING:`${clean(d.learningCount,"0")} learning record(s) connected.`,
+    MI8:`${clean(d.mi8Count,"0")} MI8 record(s) connected.`,
+    DOSSIER:`Build the full claimant intelligence dossier.`
+  }[module] || "Command module ready.";
+}
+
+document.querySelectorAll(".node").forEach(btn=>{
+  btn.addEventListener("mouseenter",()=>{
+    const m=btn.dataset.module;
+    tipTitle.textContent=m;
+    tipBody.textContent=info(m);
+    tooltip.classList.add("active");
+  });
+
+  btn.addEventListener("mouseleave",()=>{
+    tooltip.classList.remove("active");
+  });
+
+  btn.addEventListener("click",()=>{
+    const m=btn.dataset.module;
+    window.parent.postMessage({type:"capricorn:moduleClick",module:m},"*");
+    setMode("thinking","OPENING "+m);
+  });
+});
+
+window.addEventListener("message",event=>{
+  const msg=event.data||{};
+  if(msg.type==="capricorn:setMode") setMode(msg.mode,msg.label);
+  if(msg.type==="capricorn:setClaimantClass") setClass(msg);
+  if(msg.type==="capricorn:setCommandDeck") setDeck(msg.data||{});
+});
+
+setMode("idle","COMMAND DECK V2");
+</script>
 </body>
 </html>
