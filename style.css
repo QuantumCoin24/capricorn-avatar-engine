@@ -4,6 +4,8 @@
   --green: #00ffbf;
   --red: #ff4747;
   --blue: #3ea6ff;
+  --whitegold: #fff4c7;
+  --core: var(--gold);
 }
 
 * {
@@ -34,6 +36,13 @@ body {
     radial-gradient(circle at 50% 62%, rgba(255,226,122,.14), transparent 36%),
     linear-gradient(145deg,#01040c,#05152f,#01040c);
 }
+
+/* Claimant colour sync */
+.claimant-observer { --core: var(--blue); }
+.claimant-verified { --core: var(--gold); }
+.claimant-active { --core: var(--green); }
+.claimant-command { --core: var(--whitegold); }
+.claimant-alert { --core: var(--red); }
 
 .starfield,
 .deep-grid,
@@ -94,16 +103,16 @@ body {
 .ring-1 {
   width: 285px;
   height: 285px;
-  border: 1px solid rgba(0,234,255,.55);
-  box-shadow: 0 0 24px rgba(0,234,255,.22);
+  border: 1px solid color-mix(in srgb, var(--core), transparent 28%);
+  box-shadow: 0 0 28px color-mix(in srgb, var(--core), transparent 65%);
   animation: orbitA 18s linear infinite;
 }
 
 .ring-2 {
   width: 420px;
   height: 420px;
-  border: 1px solid rgba(255,226,122,.35);
-  box-shadow: 0 0 32px rgba(255,226,122,.16);
+  border: 1px solid color-mix(in srgb, var(--core), transparent 55%);
+  box-shadow: 0 0 36px color-mix(in srgb, var(--core), transparent 78%);
   animation: orbitB 30s linear infinite;
 }
 
@@ -132,7 +141,7 @@ body {
   border: 2px solid rgba(0,234,255,.32);
   box-shadow:
     0 0 45px rgba(0,234,255,.35),
-    inset 0 0 30px rgba(255,226,122,.12);
+    inset 0 0 30px color-mix(in srgb, var(--core), transparent 88%);
   animation: platformPulse 3s ease-in-out infinite;
 }
 
@@ -154,11 +163,11 @@ body {
   display: grid;
   place-items: center;
   border-radius: 50%;
-  border: 1px solid rgba(255,226,122,.42);
+  border: 1px solid color-mix(in srgb, var(--core), transparent 40%);
   background:
-    radial-gradient(circle, rgba(255,226,122,.10), rgba(0,234,255,.06) 45%, rgba(0,0,0,.16) 72%);
+    radial-gradient(circle, color-mix(in srgb, var(--core), transparent 85%), rgba(0,234,255,.06) 45%, rgba(0,0,0,.16) 72%);
   box-shadow:
-    inset 0 0 55px rgba(255,226,122,.12),
+    inset 0 0 55px color-mix(in srgb, var(--core), transparent 88%),
     0 0 60px rgba(0,234,255,.24);
   overflow: hidden;
 }
@@ -168,7 +177,7 @@ body {
   width: 230px;
   height: 230px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(255,226,122,.35), rgba(0,234,255,.10), transparent 68%);
+  background: radial-gradient(circle, color-mix(in srgb, var(--core), transparent 58%), rgba(0,234,255,.10), transparent 68%);
   filter: blur(12px);
   animation: coreGlow 3s ease-in-out infinite;
 }
@@ -179,10 +188,45 @@ body {
   width: 210px;
   height: 210px;
   object-fit: contain;
+  opacity: 0;
   filter:
-    drop-shadow(0 0 18px rgba(255,226,122,.75))
+    drop-shadow(0 0 18px color-mix(in srgb, var(--core), transparent 20%))
     drop-shadow(0 0 42px rgba(0,234,255,.18));
-  animation: logoPulse 3.5s ease-in-out infinite;
+  animation:
+    constructLogo 1.8s ease forwards,
+    logoPulse 3.5s ease-in-out 1.8s infinite;
+}
+
+.construction-ring {
+  position: absolute;
+  width: 96%;
+  height: 96%;
+  border-radius: 50%;
+  border: 1px solid color-mix(in srgb, var(--core), transparent 45%);
+  border-left-color: transparent;
+  border-bottom-color: transparent;
+  opacity: 0;
+  animation: constructRing 1.6s ease-out forwards;
+}
+
+.construction-line {
+  position: absolute;
+  width: 2px;
+  height: 0;
+  background: linear-gradient(180deg, transparent, var(--core), transparent);
+  box-shadow: 0 0 18px var(--core);
+  opacity: 0;
+  z-index: 6;
+}
+
+.line-a {
+  animation: constructLine 1.3s ease-out .65s forwards;
+}
+
+.line-b {
+  transform: rotate(90deg);
+  opacity: .35;
+  animation: constructLine 1.1s ease-out .95s forwards;
 }
 
 .core-scan {
@@ -211,7 +255,7 @@ body {
 .core-title strong {
   display: block;
   font-size: 18px;
-  color: var(--gold);
+  color: var(--core);
 }
 
 .core-title span {
@@ -260,9 +304,10 @@ body {
 }
 
 .status-strip strong {
-  color: var(--gold);
+  color: var(--core);
 }
 
+/* Level 2 — Mode sync */
 .mode-speaking .waveform span {
   animation: wave .65s infinite ease-in-out;
 }
@@ -273,43 +318,89 @@ body {
 
 .mode-speaking .ring {
   animation-duration: 8s;
+  border-color: rgba(0,234,255,.75);
+  box-shadow: 0 0 42px rgba(0,234,255,.45);
 }
 
 .mode-listening .ring {
-  box-shadow: 0 0 35px rgba(0,255,255,.45);
+  border-color: rgba(0,234,255,.72);
+  box-shadow: 0 0 35px rgba(0,255,255,.48);
 }
 
 .mode-listening .core-orb {
-  border-color: rgba(0,234,255,.75);
+  border-color: rgba(0,234,255,.82);
 }
 
 .mode-thinking .ring {
-  box-shadow: 0 0 35px rgba(255,226,122,.42);
+  border-color: color-mix(in srgb, var(--core), transparent 20%);
+  box-shadow: 0 0 42px color-mix(in srgb, var(--core), transparent 58%);
 }
 
 .mode-thinking .core-logo {
   filter:
-    drop-shadow(0 0 28px rgba(255,226,122,.95))
-    drop-shadow(0 0 52px rgba(0,234,255,.28));
+    drop-shadow(0 0 28px color-mix(in srgb, var(--core), transparent 5%))
+    drop-shadow(0 0 58px rgba(0,234,255,.32));
 }
 
 .mode-error .ring,
 .mode-error .core-orb {
-  border-color: rgba(255,71,71,.75);
+  border-color: rgba(255,71,71,.85);
 }
 
 .mode-error .core-glow {
-  background: radial-gradient(circle, rgba(255,71,71,.45), transparent 70%);
+  background: radial-gradient(circle, rgba(255,71,71,.50), transparent 70%);
 }
 
 .mode-success .ring,
 .mode-verified .ring {
-  border-color: rgba(0,255,191,.45);
+  border-color: color-mix(in srgb, var(--core), transparent 35%);
 }
 
 .mode-success .core-orb,
 .mode-verified .core-orb {
-  border-color: rgba(0,255,191,.38);
+  border-color: color-mix(in srgb, var(--core), transparent 42%);
+}
+
+@keyframes constructLogo {
+  0% {
+    opacity: 0;
+    transform: scale(.72) rotate(-4deg);
+    filter: blur(12px);
+  }
+  65% {
+    opacity: .75;
+    transform: scale(1.08) rotate(1deg);
+    filter: blur(2px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+    filter:
+      drop-shadow(0 0 18px color-mix(in srgb, var(--core), transparent 20%))
+      drop-shadow(0 0 42px rgba(0,234,255,.18));
+  }
+}
+
+@keyframes constructRing {
+  0% {
+    opacity: 0;
+    transform: rotate(-80deg) scale(.55);
+  }
+  100% {
+    opacity: 1;
+    transform: rotate(360deg) scale(1);
+  }
+}
+
+@keyframes constructLine {
+  0% {
+    opacity: 0;
+    height: 0;
+  }
+  100% {
+    opacity: .75;
+    height: 260px;
+  }
 }
 
 @keyframes orbitA {
