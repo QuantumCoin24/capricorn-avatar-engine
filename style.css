@@ -4,13 +4,20 @@
   --green: #00ffbf;
   --red: #ff4747;
   --blue: #3ea6ff;
+  --purple: #b68cff;
+  --platinum: #e8f5ff;
   --whitegold: #fff4c7;
   --core: var(--gold);
+  --core-soft: rgba(255,226,122,.22);
+  --core-glow: rgba(255,226,122,.75);
 }
 
-* { box-sizing: border-box; }
+* {
+  box-sizing: border-box;
+}
 
-html, body {
+html,
+body {
   width: 100%;
   height: 100%;
   margin: 0;
@@ -30,17 +37,57 @@ html, body {
   color: white;
   background:
     radial-gradient(circle at 50% 12%, rgba(0,234,255,.24), transparent 30%),
-    radial-gradient(circle at 50% 62%, rgba(255,226,122,.14), transparent 36%),
+    radial-gradient(circle at 50% 62%, var(--core-soft), transparent 36%),
     linear-gradient(145deg,#01040c,#05152f,#01040c);
 }
 
-.claimant-observer { --core: var(--blue); }
-.claimant-verified { --core: var(--gold); }
-.claimant-active { --core: var(--green); }
-.claimant-command { --core: var(--whitegold); }
-.claimant-alert { --core: var(--red); }
+/* CLAIMANT LEVEL COLOUR ENGINE */
+.claimant-observer {
+  --core: var(--blue);
+  --core-soft: rgba(62,166,255,.22);
+  --core-glow: rgba(62,166,255,.75);
+}
 
-.starfield, .deep-grid, .scanline, .energy-fog {
+.claimant-participant {
+  --core: var(--cyan);
+  --core-soft: rgba(0,234,255,.22);
+  --core-glow: rgba(0,234,255,.75);
+}
+
+.claimant-active {
+  --core: var(--green);
+  --core-soft: rgba(0,255,191,.22);
+  --core-glow: rgba(0,255,191,.75);
+}
+
+.claimant-verified {
+  --core: var(--gold);
+  --core-soft: rgba(255,226,122,.22);
+  --core-glow: rgba(255,226,122,.75);
+}
+
+.claimant-advanced {
+  --core: var(--platinum);
+  --core-soft: rgba(232,245,255,.24);
+  --core-glow: rgba(232,245,255,.82);
+}
+
+.claimant-command {
+  --core: var(--whitegold);
+  --core-soft: rgba(255,244,199,.28);
+  --core-glow: rgba(255,244,199,.95);
+}
+
+.claimant-alert {
+  --core: var(--red);
+  --core-soft: rgba(255,71,71,.24);
+  --core-glow: rgba(255,71,71,.8);
+}
+
+.starfield,
+.deep-grid,
+.scanline,
+.energy-fog {
   position: absolute;
   inset: 0;
   pointer-events: none;
@@ -56,7 +103,7 @@ html, body {
 }
 
 .deep-grid {
-  opacity: .08;
+  opacity: .1;
   background:
     linear-gradient(rgba(0,234,255,.25) 1px, transparent 1px),
     linear-gradient(90deg, rgba(0,234,255,.25) 1px, transparent 1px);
@@ -72,7 +119,7 @@ html, body {
 .energy-fog {
   background:
     radial-gradient(circle at 20% 20%, rgba(0,234,255,.08), transparent 30%),
-    radial-gradient(circle at 80% 50%, rgba(255,226,122,.08), transparent 35%);
+    radial-gradient(circle at 80% 50%, var(--core-soft), transparent 35%);
   animation: fogMove 14s ease-in-out infinite;
 }
 
@@ -84,6 +131,7 @@ html, body {
   place-items: center;
 }
 
+/* RINGS */
 .ring {
   position: absolute;
   border-radius: 50%;
@@ -97,15 +145,20 @@ html, body {
   width: 285px;
   height: 285px;
   border: 2px solid var(--core);
-  box-shadow: 0 0 35px color-mix(in srgb, var(--core), transparent 45%);
+  box-shadow:
+    0 0 35px var(--core-glow),
+    inset 0 0 18px var(--core-soft);
   animation: orbitA 18s linear infinite;
 }
 
 .ring-2 {
   width: 420px;
   height: 420px;
-  border: 2px solid color-mix(in srgb, var(--core), transparent 35%);
-  box-shadow: 0 0 55px color-mix(in srgb, var(--core), transparent 65%);
+  border: 2px solid var(--core);
+  opacity: .65;
+  box-shadow:
+    0 0 55px var(--core-soft),
+    inset 0 0 26px rgba(0,234,255,.12);
   animation: orbitB 30s linear infinite;
 }
 
@@ -134,10 +187,11 @@ html, body {
   border: 2px solid rgba(0,234,255,.42);
   box-shadow:
     0 0 55px rgba(0,234,255,.45),
-    inset 0 0 35px color-mix(in srgb, var(--core), transparent 75%);
+    inset 0 0 35px var(--core-soft);
   animation: platformPulse 3s ease-in-out infinite;
 }
 
+/* CORE */
 .core-card {
   position: relative;
   z-index: 10;
@@ -147,6 +201,7 @@ html, body {
   place-items: center;
   animation: breathe 4s ease-in-out infinite;
   filter: drop-shadow(0 0 42px rgba(0,234,255,.55));
+  transform-style: preserve-3d;
 }
 
 .core-orb {
@@ -156,13 +211,35 @@ html, body {
   display: grid;
   place-items: center;
   border-radius: 50%;
-  border: 2px solid color-mix(in srgb, var(--core), transparent 28%);
+  border: 2px solid var(--core);
   background:
-    radial-gradient(circle, color-mix(in srgb, var(--core), transparent 82%), rgba(0,234,255,.08) 45%, rgba(0,0,0,.18) 72%);
+    radial-gradient(circle, var(--core-soft), rgba(0,234,255,.08) 45%, rgba(0,0,0,.18) 72%);
   box-shadow:
-    inset 0 0 70px color-mix(in srgb, var(--core), transparent 78%),
-    0 0 75px rgba(0,234,255,.32);
+    inset 0 0 70px var(--core-soft),
+    0 0 75px rgba(0,234,255,.32),
+    0 0 95px var(--core-soft);
   overflow: hidden;
+}
+
+.core-orb::before,
+.core-orb::after {
+  content: "";
+  position: absolute;
+  inset: 18px;
+  border-radius: 50%;
+  border: 1px solid var(--core);
+  opacity: .35;
+  pointer-events: none;
+}
+
+.core-orb::before {
+  transform: rotate(18deg) scaleX(.72);
+  animation: innerOrbitA 7s linear infinite;
+}
+
+.core-orb::after {
+  transform: rotate(-18deg) scaleY(.72);
+  animation: innerOrbitB 11s linear infinite;
 }
 
 .core-glow {
@@ -170,7 +247,7 @@ html, body {
   width: 245px;
   height: 245px;
   border-radius: 50%;
-  background: radial-gradient(circle, color-mix(in srgb, var(--core), transparent 45%), rgba(0,234,255,.14), transparent 70%);
+  background: radial-gradient(circle, var(--core-glow), rgba(0,234,255,.14), transparent 70%);
   filter: blur(14px);
   animation: coreGlow 3s ease-in-out infinite;
 }
@@ -183,13 +260,14 @@ html, body {
   object-fit: contain;
   opacity: 0;
   filter:
-    drop-shadow(0 0 22px color-mix(in srgb, var(--core), transparent 8%))
+    drop-shadow(0 0 22px var(--core))
     drop-shadow(0 0 52px rgba(0,234,255,.26));
   animation:
     constructLogo 1.8s ease forwards,
     logoPulse 3.5s ease-in-out 1.8s infinite;
 }
 
+/* LEVEL 3 — CONSTRUCTION / REACTOR */
 .construction-ring {
   position: absolute;
   width: 96%;
@@ -269,6 +347,33 @@ html, body {
   color: #dffcff;
 }
 
+/* LEVEL 6 — COMMAND VISUAL LAYER */
+.claimant-command .core-orb {
+  border-width: 3px;
+  box-shadow:
+    inset 0 0 85px rgba(255,244,199,.28),
+    0 0 95px rgba(255,244,199,.65),
+    0 0 155px rgba(0,234,255,.32);
+}
+
+.claimant-command .ring-1,
+.claimant-command .ring-2 {
+  border-width: 3px;
+}
+
+.claimant-command .ring-3 {
+  border-color: rgba(255,244,199,.55);
+  box-shadow: 0 0 60px rgba(255,244,199,.24);
+}
+
+.claimant-command .core-title strong::after {
+  content: " ✦";
+}
+
+.claimant-command .core-title strong::before {
+  content: "✦ ";
+}
+
 .radar-pulse {
   position: absolute;
   width: 220px;
@@ -290,8 +395,8 @@ html, body {
   width: 4px;
   height: 8px;
   border-radius: 999px;
-  background: var(--cyan);
-  box-shadow: 0 0 10px var(--cyan);
+  background: var(--core);
+  box-shadow: 0 0 10px var(--core);
 }
 
 .status-strip {
@@ -311,7 +416,7 @@ html, body {
   color: var(--core);
 }
 
-/* LEVEL 2 — obvious mode sync */
+/* LEVEL 2 — MODE SYNC */
 .mode-speaking .waveform span {
   animation: wave .65s infinite ease-in-out;
 }
@@ -348,13 +453,13 @@ html, body {
   border-color: var(--core);
   box-shadow:
     0 0 35px var(--core),
-    0 0 70px rgba(255,226,122,.35);
+    0 0 70px var(--core-soft);
   animation-duration: 6s;
 }
 
 .mode-thinking .core-logo {
   filter:
-    drop-shadow(0 0 32px color-mix(in srgb, var(--core), transparent 0%))
+    drop-shadow(0 0 32px var(--core))
     drop-shadow(0 0 70px rgba(0,234,255,.38));
 }
 
@@ -369,25 +474,28 @@ html, body {
 
 .mode-success .ring,
 .mode-verified .ring {
-  border-color: color-mix(in srgb, var(--core), transparent 25%);
+  border-color: var(--core);
 }
 
 .mode-success .core-orb,
 .mode-verified .core-orb {
-  border-color: color-mix(in srgb, var(--core), transparent 30%);
+  border-color: var(--core);
 }
 
+/* ANIMATIONS */
 @keyframes constructLogo {
   0% {
     opacity: 0;
     transform: scale(.72) rotate(-4deg);
     filter: blur(12px);
   }
+
   65% {
     opacity: .75;
     transform: scale(1.08) rotate(1deg);
     filter: blur(2px);
   }
+
   100% {
     opacity: 1;
     transform: scale(1) rotate(0deg);
@@ -395,13 +503,27 @@ html, body {
 }
 
 @keyframes constructRing {
-  0% { opacity: 0; transform: rotate(-80deg) scale(.55); }
-  100% { opacity: .9; transform: rotate(360deg) scale(1); }
+  0% {
+    opacity: 0;
+    transform: rotate(-80deg) scale(.55);
+  }
+
+  100% {
+    opacity: .9;
+    transform: rotate(360deg) scale(1);
+  }
 }
 
 @keyframes constructLine {
-  0% { opacity: 0; height: 0; }
-  100% { opacity: .8; height: 270px; }
+  0% {
+    opacity: 0;
+    height: 0;
+  }
+
+  100% {
+    opacity: .8;
+    height: 270px;
+  }
 }
 
 @keyframes reactorSpin {
@@ -409,11 +531,22 @@ html, body {
   to { transform: rotate(360deg); }
 }
 
+@keyframes innerOrbitA {
+  from { transform: rotate(18deg) scaleX(.72); }
+  to { transform: rotate(378deg) scaleX(.72); }
+}
+
+@keyframes innerOrbitB {
+  from { transform: rotate(-18deg) scaleY(.72); }
+  to { transform: rotate(-378deg) scaleY(.72); }
+}
+
 @keyframes spinePulse {
   0%,100% {
     opacity: .42;
     box-shadow: 0 0 10px var(--core);
   }
+
   50% {
     opacity: 1;
     box-shadow:
@@ -450,7 +583,7 @@ html, body {
 
 @keyframes logoTalk {
   0%,100% { transform: scale(1); }
-  50% { transform: scale(1.085); }
+  50% { transform: scale(1.105); }
 }
 
 @keyframes coreGlow {
