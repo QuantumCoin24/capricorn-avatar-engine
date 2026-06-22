@@ -1,4 +1,4 @@
-/* PHASE 11 — COMMAND HALO / LIVE V3 DECK */
+/* PHASE 12 — LIVING GALAXY V2 / COMMAND DECK V9 */
 
 .command-halo {
   position: absolute;
@@ -7,6 +7,43 @@
   border-radius: 50%;
   animation: commandDeckFloat 7s ease-in-out infinite;
   z-index: 15;
+}
+
+.galaxy-lines {
+  position: absolute;
+  width: 720px;
+  height: 720px;
+  inset: 0;
+  z-index: 13;
+  pointer-events: none;
+  overflow: visible;
+}
+
+.galaxy-line {
+  stroke: rgba(0,234,255,.32);
+  stroke-width: 1.4;
+  stroke-linecap: round;
+  stroke-dasharray: 8 10;
+  filter: drop-shadow(0 0 7px rgba(0,234,255,.65));
+  animation: lineFlow 4.2s linear infinite;
+}
+
+.galaxy-line.primary {
+  stroke: var(--core);
+  stroke-width: 2.6;
+  stroke-dasharray: 10 8;
+  filter: drop-shadow(0 0 10px var(--glow));
+  animation: lineFlow 1.8s linear infinite;
+}
+
+.galaxy-line.warning {
+  stroke: var(--gold);
+  filter: drop-shadow(0 0 8px rgba(255,226,122,.7));
+}
+
+.galaxy-line.alert {
+  stroke: var(--red);
+  filter: drop-shadow(0 0 10px rgba(255,71,71,.8));
 }
 
 .node {
@@ -68,17 +105,110 @@
     inset 0 0 24px rgba(255,226,122,.13);
 }
 
+.node.alert {
+  border-color: var(--red);
+  box-shadow:
+    0 0 38px rgba(255,71,71,.55),
+    inset 0 0 24px rgba(255,71,71,.16);
+}
+
 .node.empty {
   opacity: .48;
   border-color: rgba(255,255,255,.28);
   filter: grayscale(.35);
 }
 
+.node.path {
+  transform: scale(1.12);
+  border-color: var(--core);
+  box-shadow:
+    0 0 44px var(--glow),
+    0 0 90px rgba(0,234,255,.35),
+    inset 0 0 28px var(--soft);
+}
+
+.health-excellent {
+  --core: #fff4c7;
+  --soft: rgba(255,244,199,.32);
+  --glow: rgba(255,244,199,1);
+}
+
+.health-strong {
+  --core: #00ffbf;
+  --soft: rgba(0,255,191,.26);
+  --glow: rgba(0,255,191,.9);
+}
+
+.health-stable {
+  --core: #ffe27a;
+  --soft: rgba(255,226,122,.24);
+  --glow: rgba(255,226,122,.88);
+}
+
+.health-weak {
+  --core: #ffb347;
+  --soft: rgba(255,179,71,.24);
+  --glow: rgba(255,179,71,.82);
+}
+
+.health-critical {
+  --core: #ff4747;
+  --soft: rgba(255,71,71,.25);
+  --glow: rgba(255,71,71,.88);
+}
+
+.mission-active .orb {
+  animation: breathe 2.1s ease-in-out infinite;
+}
+
+.event-active .scan {
+  animation-duration: 3.2s;
+}
+
+.galaxy-active .r1,
+.galaxy-active .r2,
+.galaxy-active .r3 {
+  box-shadow:
+    0 0 34px var(--soft),
+    inset 0 0 30px rgba(0,234,255,.16);
+}
+
+.galaxy-active .node.live {
+  animation-duration: 1.8s;
+}
+
+.mission-active .node.warn,
+.health-weak .node.warn,
+.health-critical .node.warn {
+  animation: nodeAlert 1.2s ease-in-out infinite;
+}
+
 @keyframes commandDeckFloat {
   0%,100% {
     filter: drop-shadow(0 0 18px var(--soft));
   }
+
   50% {
     filter: drop-shadow(0 0 38px var(--glow));
+  }
+}
+
+@keyframes lineFlow {
+  to {
+    stroke-dashoffset: -90;
+  }
+}
+
+@keyframes nodeAlert {
+  0%,100% {
+    box-shadow:
+      0 0 18px rgba(255,226,122,.28),
+      inset 0 0 16px rgba(255,226,122,.08);
+  }
+
+  50% {
+    box-shadow:
+      0 0 42px rgba(255,71,71,.58),
+      inset 0 0 26px rgba(255,71,71,.2);
   }
 }
