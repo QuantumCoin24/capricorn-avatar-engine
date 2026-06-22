@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Capricorn OS Command Deck V3</title>
+<title>Capricorn OS Command Deck V9 — Living Galaxy</title>
 
 <style>
 :root{
@@ -52,6 +52,12 @@ html,body{
 .claimant-command{--core:#fff4c7;--soft:rgba(255,244,199,.3);--glow:rgba(255,244,199,1)}
 .claimant-alert{--core:#ff4747;--soft:rgba(255,71,71,.24);--glow:rgba(255,71,71,.85)}
 
+.health-excellent{--core:#fff4c7;--soft:rgba(255,244,199,.32);--glow:rgba(255,244,199,1)}
+.health-strong{--core:#00ffbf;--soft:rgba(0,255,191,.26);--glow:rgba(0,255,191,.9)}
+.health-stable{--core:#ffe27a;--soft:rgba(255,226,122,.24);--glow:rgba(255,226,122,.88)}
+.health-weak{--core:#ffb347;--soft:rgba(255,179,71,.24);--glow:rgba(255,179,71,.82)}
+.health-critical{--core:#ff4747;--soft:rgba(255,71,71,.25);--glow:rgba(255,71,71,.88)}
+
 .layer{
   position:absolute;
   inset:0;
@@ -81,6 +87,8 @@ html,body{
   animation:scanMove 6s linear infinite;
 }
 
+.event-active .scan{animation-duration:3.2s}
+
 .fog{
   background:
     radial-gradient(circle at 18% 25%,rgba(0,234,255,.12),transparent 28%),
@@ -108,6 +116,12 @@ html,body{
 .r3{width:535px;height:535px;border-color:rgba(0,234,255,.42);animation:spin 32s linear infinite}
 .r4{width:660px;height:660px;border-style:dashed;border-color:rgba(255,255,255,.16);animation:spinReverse 52s linear infinite}
 
+.galaxy-active .r1,
+.galaxy-active .r2,
+.galaxy-active .r3{
+  box-shadow:0 0 34px var(--soft), inset 0 0 30px rgba(0,234,255,.16);
+}
+
 .orb{
   position:relative;
   width:340px;
@@ -126,6 +140,8 @@ html,body{
   animation:breathe 3.2s ease-in-out infinite;
   z-index:10;
 }
+
+.mission-active .orb{animation:breathe 2.1s ease-in-out infinite}
 
 .orb:before,.orb:after{
   content:"";
@@ -178,6 +194,43 @@ html,body{
   animation:pulsePlatform 2.4s ease-in-out infinite;
 }
 
+.galaxy-lines{
+  position:absolute;
+  width:720px;
+  height:720px;
+  inset:0;
+  z-index:13;
+  pointer-events:none;
+  overflow:visible;
+}
+
+.galaxy-line{
+  stroke:rgba(0,234,255,.32);
+  stroke-width:1.4;
+  stroke-linecap:round;
+  stroke-dasharray:8 10;
+  filter:drop-shadow(0 0 7px rgba(0,234,255,.65));
+  animation:lineFlow 4.2s linear infinite;
+}
+
+.galaxy-line.primary{
+  stroke:var(--core);
+  stroke-width:2.6;
+  stroke-dasharray:10 8;
+  filter:drop-shadow(0 0 10px var(--glow));
+  animation:lineFlow 1.8s linear infinite;
+}
+
+.galaxy-line.warning{
+  stroke:var(--gold);
+  filter:drop-shadow(0 0 8px rgba(255,226,122,.7));
+}
+
+.galaxy-line.alert{
+  stroke:var(--red);
+  filter:drop-shadow(0 0 10px rgba(255,71,71,.8));
+}
+
 .command-halo{
   position:absolute;
   width:610px;
@@ -219,6 +272,25 @@ html,body{
 
 .node.warn{
   border-color:var(--gold);
+}
+
+.node.alert{
+  border-color:var(--red);
+  box-shadow:0 0 34px rgba(255,71,71,.55), inset 0 0 20px rgba(255,71,71,.16);
+}
+
+.node.path{
+  transform:scale(1.12);
+  border-color:var(--core);
+  box-shadow:0 0 44px var(--glow),0 0 90px rgba(0,234,255,.35),inset 0 0 28px var(--soft);
+}
+
+.galaxy-active .node.live{animation-duration:1.8s}
+
+.mission-active .node.warn,
+.health-weak .node.warn,
+.health-critical .node.warn{
+  animation:nodeAlert 1.2s ease-in-out infinite;
 }
 
 .node strong{
@@ -312,12 +384,15 @@ html,body{
 @keyframes pulsePlatform{0%,100%{transform:rotateX(70deg) scale(.95)}50%{transform:rotateX(70deg) scale(1.06)}}
 @keyframes haloDrift{from{filter:drop-shadow(0 0 14px var(--soft))}50%{filter:drop-shadow(0 0 32px var(--glow))}to{filter:drop-shadow(0 0 14px var(--soft))}}
 @keyframes nodePulse{0%,100%{box-shadow:0 0 18px var(--soft), inset 0 0 16px rgba(0,234,255,.08)}50%{box-shadow:0 0 34px var(--soft), inset 0 0 24px rgba(0,234,255,.16)}}
+@keyframes nodeAlert{0%,100%{box-shadow:0 0 18px rgba(255,226,122,.28),inset 0 0 16px rgba(255,226,122,.08)}50%{box-shadow:0 0 42px rgba(255,71,71,.58),inset 0 0 26px rgba(255,71,71,.2)}}
+@keyframes lineFlow{to{stroke-dashoffset:-90}}
 @keyframes stars{from{background-position:0 0,0 0}to{background-position:600px 600px,-500px 420px}}
 @keyframes scanMove{from{transform:translateY(-240px)}to{transform:translateY(1000px)}}
 @keyframes fog{0%,100%{transform:translateX(0)}50%{transform:translateX(18px)}}
 
 @media(max-width:700px){
   .core-wrap{width:100%;height:100vh}
+  .galaxy-lines{width:100%;height:100%}
   .command-halo{width:390px;height:390px}
   .node{width:60px;height:60px}
   .node strong{font-size:8px}
@@ -338,7 +413,9 @@ html,body{
   <div class="layer scan"></div>
   <div class="layer fog"></div>
 
-  <section class="core-wrap">
+  <section class="core-wrap" id="coreWrap">
+    <svg id="galaxyLines" class="galaxy-lines" viewBox="0 0 720 720"></svg>
+
     <div class="ring r1"></div>
     <div class="ring r2"></div>
     <div class="ring r3"></div>
@@ -382,6 +459,7 @@ const app = document.getElementById("app");
 const statusText = document.getElementById("statusText");
 const modeText = document.getElementById("modeText");
 const memoryText = document.getElementById("memoryText");
+const galaxyLines = document.getElementById("galaxyLines");
 
 const nodes = {
   QFN: document.getElementById("qfn"),
@@ -405,6 +483,34 @@ const buttonNodes = {
   DOSSIER: document.querySelector('[data-module="DOSSIER"]')
 };
 
+const pointMap = {
+  CLAIMANT: { x: 360, y: 360 },
+  QFN: { x: 360, y: 55 },
+  VAULT: { x: 565, y: 145 },
+  TIMELINE: { x: 665, y: 360 },
+  CERTIFICATES: { x: 565, y: 575 },
+  REPORTS: { x: 360, y: 665 },
+  LEARNING: { x: 155, y: 575 },
+  MI8: { x: 55, y: 360 },
+  DOSSIER: { x: 155, y: 145 }
+};
+
+const moduleAliases = {
+  claimant: "CLAIMANT",
+  qfn: "QFN",
+  vault: "VAULT",
+  reports: "REPORTS",
+  certificates: "CERTIFICATES",
+  timeline: "TIMELINE",
+  learning: "LEARNING",
+  mi8: "MI8",
+  dossier: "DOSSIER",
+  serviceRequests: "DOSSIER",
+  memory: "DOSSIER",
+  goals: "DOSSIER",
+  site: "DOSSIER"
+};
+
 const tooltip = document.getElementById("tooltip");
 const tipTitle = document.getElementById("tipTitle");
 const tipBody = document.getElementById("tipBody");
@@ -420,11 +526,53 @@ function numeric(v){
   return Number.isFinite(n) ? n : 0;
 }
 
+function moduleKey(value){
+  return moduleAliases[String(value || "").trim()] || moduleAliases[String(value || "").trim().toLowerCase()] || String(value || "").toUpperCase();
+}
+
+function setAppHealth(data={}){
+  const health = numeric(data.platformHealth);
+
+  app.classList.remove("health-excellent","health-strong","health-stable","health-weak","health-critical","mission-active","event-active","galaxy-active");
+
+  if(health >= 90) app.classList.add("health-excellent");
+  else if(health >= 75) app.classList.add("health-strong");
+  else if(health >= 55) app.classList.add("health-stable");
+  else if(health >= 35) app.classList.add("health-weak");
+  else app.classList.add("health-critical");
+
+  if(numeric(data.missionCount) > 0) app.classList.add("mission-active");
+  if(numeric(data.eventCount) > 0) app.classList.add("event-active");
+  if(numeric(data.galaxyNodes) > 0) app.classList.add("galaxy-active");
+}
+
+function clearPathNodes(){
+  Object.values(buttonNodes).forEach(btn=>{
+    if(btn) btn.classList.remove("path");
+  });
+}
+
+function highlightMissionPath(data={}){
+  clearPathNodes();
+
+  const primary = String(data.primaryMission || data.recommendedAction || "").toLowerCase();
+
+  if(primary.includes("qfn") || primary.includes("kyc")) buttonNodes.QFN?.classList.add("path");
+  if(primary.includes("vault")) buttonNodes.VAULT?.classList.add("path");
+  if(primary.includes("report")) buttonNodes.REPORTS?.classList.add("path");
+  if(primary.includes("certificate")) buttonNodes.CERTIFICATES?.classList.add("path");
+  if(primary.includes("timeline")) buttonNodes.TIMELINE?.classList.add("path");
+  if(primary.includes("learn")) buttonNodes.LEARNING?.classList.add("path");
+  if(primary.includes("mi8")) buttonNodes.MI8?.classList.add("path");
+
+  buttonNodes.DOSSIER?.classList.add("path");
+}
+
 function setLiveState(module, value){
   const node = buttonNodes[module];
   if(!node) return;
 
-  node.classList.remove("live","empty","warn");
+  node.classList.remove("live","empty","warn","alert");
 
   if(module === "DOSSIER"){
     node.classList.add("live");
@@ -433,7 +581,7 @@ function setLiveState(module, value){
 
   if(module === "QFN"){
     const active = String(value || "").toLowerCase();
-    if(active.includes("active") || active.includes("ready") || active.includes("verified")) node.classList.add("live");
+    if(active.includes("active") || active.includes("ready") || active.includes("verified") || active.includes("approved")) node.classList.add("live");
     else if(active.includes("pending") || active.includes("not")) node.classList.add("warn");
     else node.classList.add("empty");
     return;
@@ -441,6 +589,65 @@ function setLiveState(module, value){
 
   if(numeric(value) > 0) node.classList.add("live");
   else node.classList.add("empty");
+}
+
+function drawLine(fromKey,toKey,cls=""){
+  const from = pointMap[fromKey];
+  const to = pointMap[toKey];
+  if(!from || !to || !galaxyLines) return;
+
+  const line = document.createElementNS("http://www.w3.org/2000/svg","line");
+  line.setAttribute("x1",from.x);
+  line.setAttribute("y1",from.y);
+  line.setAttribute("x2",to.x);
+  line.setAttribute("y2",to.y);
+  line.setAttribute("class",`galaxy-line ${cls}`.trim());
+  galaxyLines.appendChild(line);
+}
+
+function drawGalaxyLines(data={}){
+  if(!galaxyLines) return;
+
+  galaxyLines.innerHTML = "";
+
+  const baseLinks = [
+    ["CLAIMANT","QFN"],
+    ["CLAIMANT","VAULT"],
+    ["CLAIMANT","TIMELINE"],
+    ["CLAIMANT","CERTIFICATES"],
+    ["CLAIMANT","REPORTS"],
+    ["CLAIMANT","LEARNING"],
+    ["CLAIMANT","MI8"],
+    ["CLAIMANT","DOSSIER"],
+    ["VAULT","REPORTS"],
+    ["LEARNING","CERTIFICATES"],
+    ["TIMELINE","REPORTS"],
+    ["QFN","DOSSIER"]
+  ];
+
+  baseLinks.forEach(([from,to])=>drawLine(from,to));
+
+  const primary = String(data.primaryMission || data.recommendedAction || "").toLowerCase();
+
+  if(primary.includes("qfn") || primary.includes("kyc")) drawLine("CLAIMANT","QFN","primary");
+  if(primary.includes("vault")) drawLine("CLAIMANT","VAULT","primary");
+  if(primary.includes("report")) {
+    drawLine("CLAIMANT","REPORTS","primary");
+    drawLine("VAULT","REPORTS","primary");
+  }
+  if(primary.includes("certificate")) {
+    drawLine("CLAIMANT","CERTIFICATES","primary");
+    drawLine("LEARNING","CERTIFICATES","primary");
+  }
+  if(primary.includes("timeline")) drawLine("CLAIMANT","TIMELINE","primary");
+  if(primary.includes("learn")) drawLine("CLAIMANT","LEARNING","primary");
+  if(primary.includes("mi8")) drawLine("CLAIMANT","MI8","primary");
+
+  if(numeric(data.platformHealth) < 55){
+    drawLine("CLAIMANT","DOSSIER","alert");
+  } else if(numeric(data.platformHealth) < 75){
+    drawLine("CLAIMANT","DOSSIER","warning");
+  }
 }
 
 function setMode(mode="idle", label=""){
@@ -472,10 +679,10 @@ function setClass(data={}){
 
   let c="claimant-observer";
 
-  if(v.includes("alert")||v.includes("risk")) c="claimant-alert";
-  else if(v.includes("command")||v.includes("chief")||v.includes("root")) c="claimant-command";
-  else if(v.includes("advanced")||v.includes("ultimate")) c="claimant-advanced";
-  else if(v.includes("verified")) c="claimant-verified";
+  if(v.includes("alert")||v.includes("risk")||v.includes("critical")) c="claimant-alert";
+  else if(v.includes("command")||v.includes("chief")||v.includes("root")||v.includes("excellent")) c="claimant-command";
+  else if(v.includes("advanced")||v.includes("ultimate")||v.includes("strong")) c="claimant-advanced";
+  else if(v.includes("verified")||v.includes("stable")) c="claimant-verified";
   else if(v.includes("active")) c="claimant-active";
   else if(v.includes("participant")) c="claimant-participant";
 
@@ -492,9 +699,25 @@ function setDeck(data={}){
   nodes.REPORTS.textContent = clean(deck.reportCount,"0");
   nodes.LEARNING.textContent = clean(deck.learningCount,"0");
   nodes.MI8.textContent = clean(deck.mi8Count,"0");
-  nodes.DOSSIER.textContent = clean(deck.dossierStatus,"READY");
 
-  memoryText.textContent = clean(deck.memoryStatus,"ONLINE");
+  nodes.DOSSIER.textContent =
+    deck.platformHealth !== undefined
+      ? `${clean(deck.platformHealth,"0")}%`
+      : clean(deck.dossierStatus,"READY");
+
+  memoryText.textContent =
+    deck.missionCount !== undefined
+      ? `M${clean(deck.missionCount,"0")} / E${clean(deck.eventCount,"0")}`
+      : clean(deck.memoryStatus,"ONLINE");
+
+  modeText.textContent =
+    deck.galaxyNodes !== undefined
+      ? `GALAXY ${clean(deck.galaxyNodes,"0")}/${clean(deck.galaxyLinks,"0")}`
+      : "COMMAND DECK";
+
+  setAppHealth(deck);
+  highlightMissionPath(deck);
+  drawGalaxyLines(deck);
 
   setLiveState("QFN", deck.qfnStatus || deck.qfnTier);
   setLiveState("VAULT", deck.vaultCount);
@@ -503,7 +726,7 @@ function setDeck(data={}){
   setLiveState("REPORTS", deck.reportCount);
   setLiveState("LEARNING", deck.learningCount);
   setLiveState("MI8", deck.mi8Count);
-  setLiveState("DOSSIER", deck.dossierStatus);
+  setLiveState("DOSSIER", deck.dossierStatus || deck.platformHealth);
 }
 
 function info(module){
@@ -517,7 +740,14 @@ function info(module){
     REPORTS:`${clean(d.reportCount,"0")} report record(s) connected.`,
     LEARNING:`${clean(d.learningCount,"0")} learning record(s) connected.`,
     MI8:`${clean(d.mi8Count,"0")} MI8 intelligence record(s) connected.`,
-    DOSSIER:`Build the full claimant intelligence dossier.`
+    DOSSIER:[
+      `Platform Health: ${clean(d.platformHealth,"0")}%`,
+      `Health Status: ${clean(d.healthStatus,"HEALTH_LOADING")}`,
+      `Missions: ${clean(d.missionCount,"0")}`,
+      `Events: ${clean(d.eventCount,"0")}`,
+      `Galaxy: ${clean(d.galaxyNodes,"0")} nodes / ${clean(d.galaxyLinks,"0")} links`,
+      `Primary Mission: ${clean(d.primaryMission,"No mission loaded")}`
+    ].join(" | ")
   }[module] || "Command module ready.";
 }
 
@@ -548,7 +778,8 @@ window.addEventListener("message",event=>{
   if(msg.type==="capricorn:setCommandDeck") setDeck(msg.data||{});
 });
 
-setMode("idle","COMMAND DECK V3");
+drawGalaxyLines({});
+setMode("idle","COMMAND DECK V9");
 </script>
 </body>
 </html>
