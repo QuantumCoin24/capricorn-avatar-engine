@@ -1,23 +1,71 @@
-const app = document.getElementById("capricorn-avatar-app");
-const claimantStateText = document.getElementById("claimantStateText");
+const app =
+  document.getElementById("capricorn-avatar-app") ||
+  document.getElementById("app");
+
+const claimantStateText =
+  document.getElementById("claimantStateText") ||
+  document.getElementById("statusText");
+
 const statusText = document.getElementById("statusText");
 const voiceText = document.getElementById("voiceText");
 const memoryText = document.getElementById("memoryText");
 const modeText = document.getElementById("modeText");
 
-const tooltip = document.getElementById("moduleTooltip");
-const tooltipTitle = document.getElementById("tooltipTitle");
-const tooltipBody = document.getElementById("tooltipBody");
+const tooltip =
+  document.getElementById("moduleTooltip") ||
+  document.getElementById("tooltip");
+
+const tooltipTitle =
+  document.getElementById("tooltipTitle") ||
+  document.getElementById("tipTitle");
+
+const tooltipBody =
+  document.getElementById("tooltipBody") ||
+  document.getElementById("tipBody");
 
 const nodeMap = {
-  QFN: document.getElementById("nodeQfn"),
-  VAULT: document.getElementById("nodeVault"),
-  TIMELINE: document.getElementById("nodeTimeline"),
-  CERTIFICATES: document.getElementById("nodeCertificates"),
-  REPORTS: document.getElementById("nodeReports"),
-  LEARNING: document.getElementById("nodeLearning"),
-  MI8: document.getElementById("nodeMi8"),
-  DOSSIER: document.getElementById("nodeDossier")
+  QFN:
+    document.getElementById("nodeQfn") ||
+    document.getElementById("qfn"),
+
+  VAULT:
+    document.getElementById("nodeVault") ||
+    document.getElementById("vault"),
+
+  TIMELINE:
+    document.getElementById("nodeTimeline") ||
+    document.getElementById("timeline"),
+
+  CERTIFICATES:
+    document.getElementById("nodeCertificates") ||
+    document.getElementById("cert"),
+
+  REPORTS:
+    document.getElementById("nodeReports") ||
+    document.getElementById("reports"),
+
+  LEARNING:
+    document.getElementById("nodeLearning") ||
+    document.getElementById("learning"),
+
+  MI8:
+    document.getElementById("nodeMi8") ||
+    document.getElementById("mi8"),
+
+  DOSSIER:
+    document.getElementById("nodeDossier") ||
+    document.getElementById("dossier")
+};
+
+const buttonMap = {
+  QFN: document.querySelector('[data-module="QFN"]'),
+  VAULT: document.querySelector('[data-module="VAULT"]'),
+  TIMELINE: document.querySelector('[data-module="TIMELINE"]'),
+  CERTIFICATES: document.querySelector('[data-module="CERTIFICATES"]'),
+  REPORTS: document.querySelector('[data-module="REPORTS"]'),
+  LEARNING: document.querySelector('[data-module="LEARNING"]'),
+  MI8: document.querySelector('[data-module="MI8"]'),
+  DOSSIER: document.querySelector('[data-module="DOSSIER"]')
 };
 
 let commandDeckData = {};
@@ -27,7 +75,56 @@ function clean(value, fallback = "--") {
   return String(value);
 }
 
+function numeric(value) {
+  const n = Number(value);
+  return Number.isFinite(n) ? n : 0;
+}
+
+function safeSetText(element, value) {
+  if (element) element.textContent = value;
+}
+
+function setNodeState(module, value) {
+  const node = buttonMap[module];
+  if (!node) return;
+
+  node.classList.remove("live", "empty", "warn");
+
+  if (module === "DOSSIER") {
+    node.classList.add("live");
+    return;
+  }
+
+  if (module === "QFN") {
+    const v = String(value || "").toLowerCase();
+
+    if (
+      v.includes("active") ||
+      v.includes("ready") ||
+      v.includes("verified") ||
+      v.includes("approved")
+    ) {
+      node.classList.add("live");
+    } else if (
+      v.includes("pending") ||
+      v.includes("not") ||
+      v.includes("awaiting")
+    ) {
+      node.classList.add("warn");
+    } else {
+      node.classList.add("empty");
+    }
+
+    return;
+  }
+
+  if (numeric(value) > 0) node.classList.add("live");
+  else node.classList.add("empty");
+}
+
 function setMode(mode = "idle", label = "") {
+  if (!app) return;
+
   app.classList.remove(
     "mode-idle",
     "mode-speaking",
@@ -40,22 +137,33 @@ function setMode(mode = "idle", label = "") {
 
   app.classList.add(`mode-${mode}`);
 
-  statusText.textContent =
+  safeSetText(
+    statusText,
     mode === "speaking" ? "SPEAKING" :
     mode === "listening" ? "LISTENING" :
     mode === "thinking" ? "THINKING" :
     mode === "error" ? "ERROR" :
     mode === "success" ? "SUCCESS" :
     mode === "verified" ? "ONLINE" :
-    "IDLE";
+    "IDLE"
+  );
 
-  modeText.textContent = label || mode.toUpperCase();
+  safeSetText(modeText, label || mode.toUpperCase());
 
-  if (label) claimantStateText.textContent = label;
+  if (label && claimantStateText) {
+    claimantStateText.textContent = label;
+  }
 }
 
 function setClaimantClass(payload = {}) {
-  const value = String(payload.claimantLevel || payload.status || "Observer").toLowerCase();
+  if (!app) return;
+
+  const value = String(
+    payload.claimantLevel ||
+    payload.status ||
+    payload.level ||
+    "Observer"
+  ).toLowerCase();
 
   app.classList.remove(
     "claimant-observer",
@@ -69,31 +177,59 @@ function setClaimantClass(payload = {}) {
 
   let className = "claimant-observer";
 
-  if (value.includes("alert") || value.includes("risk")) className = "claimant-alert";
-  else if (value.includes("command") || value.includes("chief") || value.includes("root")) className = "claimant-command";
-  else if (value.includes("advanced") || value.includes("ultimate")) className = "claimant-advanced";
-  else if (value.includes("verified") || value.includes("active claimant")) className = "claimant-verified";
-  else if (value.includes("active")) className = "claimant-active";
-  else if (value.includes("participant")) className = "claimant-participant";
+  if (value.includes("alert") || value.includes("risk")) {
+    className = "claimant-alert";
+  } else if (
+    value.includes("command") ||
+    value.includes("chief") ||
+    value.includes("root")
+  ) {
+    className = "claimant-command";
+  } else if (
+    value.includes("advanced") ||
+    value.includes("ultimate")
+  ) {
+    className = "claimant-advanced";
+  } else if (
+    value.includes("verified") ||
+    value.includes("active claimant")
+  ) {
+    className = "claimant-verified";
+  } else if (value.includes("active")) {
+    className = "claimant-active";
+  } else if (value.includes("participant")) {
+    className = "claimant-participant";
+  }
 
   app.classList.add(className);
 
-  claimantStateText.textContent = `${value.toUpperCase()} COMMAND DECK`;
+  if (claimantStateText) {
+    claimantStateText.textContent = `${value.toUpperCase()} COMMAND DECK`;
+  }
 }
 
 function setCommandDeck(data = {}) {
   commandDeckData = data || {};
 
-  nodeMap.QFN.textContent = clean(data.qfnStatus || data.qfnTier || data.qfnCount);
-  nodeMap.VAULT.textContent = clean(data.vaultCount, "0");
-  nodeMap.TIMELINE.textContent = clean(data.timelineCount, "0");
-  nodeMap.CERTIFICATES.textContent = clean(data.certificateCount, "0");
-  nodeMap.REPORTS.textContent = clean(data.reportCount, "0");
-  nodeMap.LEARNING.textContent = clean(data.learningCount, "0");
-  nodeMap.MI8.textContent = clean(data.mi8Count, "0");
-  nodeMap.DOSSIER.textContent = clean(data.dossierStatus, "READY");
+  safeSetText(nodeMap.QFN, clean(data.qfnStatus || data.qfnTier || data.qfnCount));
+  safeSetText(nodeMap.VAULT, clean(data.vaultCount, "0"));
+  safeSetText(nodeMap.TIMELINE, clean(data.timelineCount, "0"));
+  safeSetText(nodeMap.CERTIFICATES, clean(data.certificateCount, "0"));
+  safeSetText(nodeMap.REPORTS, clean(data.reportCount, "0"));
+  safeSetText(nodeMap.LEARNING, clean(data.learningCount, "0"));
+  safeSetText(nodeMap.MI8, clean(data.mi8Count, "0"));
+  safeSetText(nodeMap.DOSSIER, clean(data.dossierStatus, "READY"));
 
-  memoryText.textContent = clean(data.memoryStatus, "ONLINE");
+  safeSetText(memoryText, clean(data.memoryStatus, "ONLINE"));
+
+  setNodeState("QFN", data.qfnStatus || data.qfnTier || data.qfnCount);
+  setNodeState("VAULT", data.vaultCount);
+  setNodeState("TIMELINE", data.timelineCount);
+  setNodeState("CERTIFICATES", data.certificateCount);
+  setNodeState("REPORTS", data.reportCount);
+  setNodeState("LEARNING", data.learningCount);
+  setNodeState("MI8", data.mi8Count);
+  setNodeState("DOSSIER", data.dossierStatus);
 }
 
 function moduleBody(module) {
@@ -113,16 +249,17 @@ function moduleBody(module) {
   return map[module] || "Command module ready.";
 }
 
-document.querySelectorAll(".command-node").forEach(node => {
+document.querySelectorAll(".command-node, .node").forEach(node => {
   node.addEventListener("mouseenter", () => {
     const module = node.dataset.module;
-    tooltipTitle.textContent = module;
-    tooltipBody.textContent = moduleBody(module);
-    tooltip.classList.add("active");
+
+    if (tooltipTitle) tooltipTitle.textContent = module;
+    if (tooltipBody) tooltipBody.textContent = moduleBody(module);
+    if (tooltip) tooltip.classList.add("active");
   });
 
   node.addEventListener("mouseleave", () => {
-    tooltip.classList.remove("active");
+    if (tooltip) tooltip.classList.remove("active");
   });
 
   node.addEventListener("click", () => {
