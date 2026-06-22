@@ -24,37 +24,14 @@ const tooltipBody =
   document.getElementById("tipBody");
 
 const nodeMap = {
-  QFN:
-    document.getElementById("nodeQfn") ||
-    document.getElementById("qfn"),
-
-  VAULT:
-    document.getElementById("nodeVault") ||
-    document.getElementById("vault"),
-
-  TIMELINE:
-    document.getElementById("nodeTimeline") ||
-    document.getElementById("timeline"),
-
-  CERTIFICATES:
-    document.getElementById("nodeCertificates") ||
-    document.getElementById("cert"),
-
-  REPORTS:
-    document.getElementById("nodeReports") ||
-    document.getElementById("reports"),
-
-  LEARNING:
-    document.getElementById("nodeLearning") ||
-    document.getElementById("learning"),
-
-  MI8:
-    document.getElementById("nodeMi8") ||
-    document.getElementById("mi8"),
-
-  DOSSIER:
-    document.getElementById("nodeDossier") ||
-    document.getElementById("dossier")
+  QFN: document.getElementById("nodeQfn") || document.getElementById("qfn"),
+  VAULT: document.getElementById("nodeVault") || document.getElementById("vault"),
+  TIMELINE: document.getElementById("nodeTimeline") || document.getElementById("timeline"),
+  CERTIFICATES: document.getElementById("nodeCertificates") || document.getElementById("cert"),
+  REPORTS: document.getElementById("nodeReports") || document.getElementById("reports"),
+  LEARNING: document.getElementById("nodeLearning") || document.getElementById("learning"),
+  MI8: document.getElementById("nodeMi8") || document.getElementById("mi8"),
+  DOSSIER: document.getElementById("nodeDossier") || document.getElementById("dossier")
 };
 
 const buttonMap = {
@@ -84,11 +61,38 @@ function safeSetText(element, value) {
   if (element) element.textContent = value;
 }
 
+function setAppHealth(data = {}) {
+  if (!app) return;
+
+  const health = numeric(data.platformHealth);
+
+  app.classList.remove(
+    "health-excellent",
+    "health-strong",
+    "health-stable",
+    "health-weak",
+    "health-critical",
+    "mission-active",
+    "event-active",
+    "galaxy-active"
+  );
+
+  if (health >= 90) app.classList.add("health-excellent");
+  else if (health >= 75) app.classList.add("health-strong");
+  else if (health >= 55) app.classList.add("health-stable");
+  else if (health >= 35) app.classList.add("health-weak");
+  else app.classList.add("health-critical");
+
+  if (numeric(data.missionCount) > 0) app.classList.add("mission-active");
+  if (numeric(data.eventCount) > 0) app.classList.add("event-active");
+  if (numeric(data.galaxyNodes) > 0) app.classList.add("galaxy-active");
+}
+
 function setNodeState(module, value) {
   const node = buttonMap[module];
   if (!node) return;
 
-  node.classList.remove("live", "empty", "warn");
+  node.classList.remove("live", "empty", "warn", "alert");
 
   if (module === "DOSSIER") {
     node.classList.add("live");
@@ -177,22 +181,25 @@ function setClaimantClass(payload = {}) {
 
   let className = "claimant-observer";
 
-  if (value.includes("alert") || value.includes("risk")) {
+  if (value.includes("alert") || value.includes("risk") || value.includes("critical")) {
     className = "claimant-alert";
   } else if (
     value.includes("command") ||
     value.includes("chief") ||
-    value.includes("root")
+    value.includes("root") ||
+    value.includes("excellent")
   ) {
     className = "claimant-command";
   } else if (
     value.includes("advanced") ||
-    value.includes("ultimate")
+    value.includes("ultimate") ||
+    value.includes("strong")
   ) {
     className = "claimant-advanced";
   } else if (
     value.includes("verified") ||
-    value.includes("active claimant")
+    value.includes("active claimant") ||
+    value.includes("stable")
   ) {
     className = "claimant-verified";
   } else if (value.includes("active")) {
@@ -218,9 +225,29 @@ function setCommandDeck(data = {}) {
   safeSetText(nodeMap.REPORTS, clean(data.reportCount, "0"));
   safeSetText(nodeMap.LEARNING, clean(data.learningCount, "0"));
   safeSetText(nodeMap.MI8, clean(data.mi8Count, "0"));
-  safeSetText(nodeMap.DOSSIER, clean(data.dossierStatus, "READY"));
 
-  safeSetText(memoryText, clean(data.memoryStatus, "ONLINE"));
+  safeSetText(
+    nodeMap.DOSSIER,
+    data.platformHealth !== undefined
+      ? `${clean(data.platformHealth, "0")}%`
+      : clean(data.dossierStatus, "READY")
+  );
+
+  safeSetText(
+    memoryText,
+    data.missionCount !== undefined
+      ? `M${clean(data.missionCount, "0")} / E${clean(data.eventCount, "0")}`
+      : clean(data.memoryStatus, "ONLINE")
+  );
+
+  safeSetText(
+    modeText,
+    data.galaxyNodes !== undefined
+      ? `GALAXY ${clean(data.galaxyNodes, "0")}/${clean(data.galaxyLinks, "0")}`
+      : "COMMAND DECK"
+  );
+
+  setAppHealth(data);
 
   setNodeState("QFN", data.qfnStatus || data.qfnTier || data.qfnCount);
   setNodeState("VAULT", data.vaultCount);
@@ -229,7 +256,7 @@ function setCommandDeck(data = {}) {
   setNodeState("REPORTS", data.reportCount);
   setNodeState("LEARNING", data.learningCount);
   setNodeState("MI8", data.mi8Count);
-  setNodeState("DOSSIER", data.dossierStatus);
+  setNodeState("DOSSIER", data.dossierStatus || data.platformHealth);
 }
 
 function moduleBody(module) {
@@ -243,7 +270,14 @@ function moduleBody(module) {
     REPORTS: `${clean(d.reportCount, "0")} report record(s) connected.`,
     LEARNING: `${clean(d.learningCount, "0")} learning record(s) connected.`,
     MI8: `${clean(d.mi8Count, "0")} MI8 intelligence record(s) connected.`,
-    DOSSIER: "Build full claimant intelligence dossier."
+    DOSSIER: [
+      `Platform Health: ${clean(d.platformHealth, "0")}%`,
+      `Health Status: ${clean(d.healthStatus, "HEALTH_LOADING")}`,
+      `Missions: ${clean(d.missionCount, "0")}`,
+      `Events: ${clean(d.eventCount, "0")}`,
+      `Galaxy: ${clean(d.galaxyNodes, "0")} nodes / ${clean(d.galaxyLinks, "0")} links`,
+      `Primary Mission: ${clean(d.primaryMission, "No mission loaded")}`
+    ].join(" | ")
   };
 
   return map[module] || "Command module ready.";
@@ -290,4 +324,4 @@ window.addEventListener("message", event => {
   }
 });
 
-setMode("idle", "COMMAND DECK ONLINE");
+setMode("idle", "COMMAND DECK V8");
