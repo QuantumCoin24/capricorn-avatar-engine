@@ -23,6 +23,10 @@ const tooltipBody =
   document.getElementById("tooltipBody") ||
   document.getElementById("tipBody");
 
+const galaxyLines =
+  document.getElementById("galaxyLines") ||
+  document.getElementById("galaxy-lines");
+
 const nodeMap = {
   QFN: document.getElementById("nodeQfn") || document.getElementById("qfn"),
   VAULT: document.getElementById("nodeVault") || document.getElementById("vault"),
@@ -43,6 +47,18 @@ const buttonMap = {
   LEARNING: document.querySelector('[data-module="LEARNING"]'),
   MI8: document.querySelector('[data-module="MI8"]'),
   DOSSIER: document.querySelector('[data-module="DOSSIER"]')
+};
+
+const pointMap = {
+  CLAIMANT: { x: 360, y: 360 },
+  QFN: { x: 360, y: 55 },
+  VAULT: { x: 565, y: 145 },
+  TIMELINE: { x: 665, y: 360 },
+  CERTIFICATES: { x: 565, y: 575 },
+  REPORTS: { x: 360, y: 665 },
+  LEARNING: { x: 155, y: 575 },
+  MI8: { x: 55, y: 360 },
+  DOSSIER: { x: 155, y: 145 }
 };
 
 let commandDeckData = {};
@@ -88,6 +104,33 @@ function setAppHealth(data = {}) {
   if (numeric(data.galaxyNodes) > 0) app.classList.add("galaxy-active");
 }
 
+function clearPathNodes() {
+  Object.values(buttonMap).forEach(node => {
+    if (node) node.classList.remove("path");
+  });
+}
+
+function highlightMissionPath(data = {}) {
+  clearPathNodes();
+
+  const primary = String(
+    data.primaryMission ||
+    data.recommendedAction ||
+    data.healthStatus ||
+    ""
+  ).toLowerCase();
+
+  if (primary.includes("qfn") || primary.includes("kyc")) buttonMap.QFN?.classList.add("path");
+  if (primary.includes("vault")) buttonMap.VAULT?.classList.add("path");
+  if (primary.includes("report")) buttonMap.REPORTS?.classList.add("path");
+  if (primary.includes("certificate")) buttonMap.CERTIFICATES?.classList.add("path");
+  if (primary.includes("timeline")) buttonMap.TIMELINE?.classList.add("path");
+  if (primary.includes("learn")) buttonMap.LEARNING?.classList.add("path");
+  if (primary.includes("mi8")) buttonMap.MI8?.classList.add("path");
+
+  buttonMap.DOSSIER?.classList.add("path");
+}
+
 function setNodeState(module, value) {
   const node = buttonMap[module];
   if (!node) return;
@@ -95,7 +138,10 @@ function setNodeState(module, value) {
   node.classList.remove("live", "empty", "warn", "alert");
 
   if (module === "DOSSIER") {
-    node.classList.add("live");
+    const health = numeric(commandDeckData.platformHealth);
+    if (health < 55) node.classList.add("alert");
+    else if (health < 75) node.classList.add("warn");
+    else node.classList.add("live");
     return;
   }
 
@@ -124,6 +170,83 @@ function setNodeState(module, value) {
 
   if (numeric(value) > 0) node.classList.add("live");
   else node.classList.add("empty");
+}
+
+function drawLine(fromKey, toKey, className = "") {
+  if (!galaxyLines) return;
+
+  const from = pointMap[fromKey];
+  const to = pointMap[toKey];
+
+  if (!from || !to) return;
+
+  const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+
+  line.setAttribute("x1", from.x);
+  line.setAttribute("y1", from.y);
+  line.setAttribute("x2", to.x);
+  line.setAttribute("y2", to.y);
+  line.setAttribute("class", `galaxy-line ${className}`.trim());
+
+  galaxyLines.appendChild(line);
+}
+
+function drawGalaxyLines(data = {}) {
+  if (!galaxyLines) return;
+
+  galaxyLines.innerHTML = "";
+
+  const baseLinks = [
+    ["CLAIMANT", "QFN"],
+    ["CLAIMANT", "VAULT"],
+    ["CLAIMANT", "TIMELINE"],
+    ["CLAIMANT", "CERTIFICATES"],
+    ["CLAIMANT", "REPORTS"],
+    ["CLAIMANT", "LEARNING"],
+    ["CLAIMANT", "MI8"],
+    ["CLAIMANT", "DOSSIER"],
+    ["VAULT", "REPORTS"],
+    ["LEARNING", "CERTIFICATES"],
+    ["TIMELINE", "REPORTS"],
+    ["QFN", "DOSSIER"]
+  ];
+
+  baseLinks.forEach(([from, to]) => drawLine(from, to));
+
+  const primary = String(
+    data.primaryMission ||
+    data.recommendedAction ||
+    ""
+  ).toLowerCase();
+
+  if (primary.includes("qfn") || primary.includes("kyc")) {
+    drawLine("CLAIMANT", "QFN", "primary");
+    drawLine("QFN", "DOSSIER", "primary");
+  }
+
+  if (primary.includes("vault")) {
+    drawLine("CLAIMANT", "VAULT", "primary");
+    drawLine("VAULT", "REPORTS", "warning");
+  }
+
+  if (primary.includes("report")) {
+    drawLine("CLAIMANT", "REPORTS", "primary");
+    drawLine("VAULT", "REPORTS", "primary");
+  }
+
+  if (primary.includes("certificate")) {
+    drawLine("CLAIMANT", "CERTIFICATES", "primary");
+    drawLine("LEARNING", "CERTIFICATES", "primary");
+  }
+
+  if (primary.includes("timeline")) drawLine("CLAIMANT", "TIMELINE", "primary");
+  if (primary.includes("learn")) drawLine("CLAIMANT", "LEARNING", "primary");
+  if (primary.includes("mi8")) drawLine("CLAIMANT", "MI8", "primary");
+
+  const health = numeric(data.platformHealth);
+
+  if (health < 55) drawLine("CLAIMANT", "DOSSIER", "alert");
+  else if (health < 75) drawLine("CLAIMANT", "DOSSIER", "warning");
 }
 
 function setMode(mode = "idle", label = "") {
@@ -248,6 +371,8 @@ function setCommandDeck(data = {}) {
   );
 
   setAppHealth(data);
+  highlightMissionPath(data);
+  drawGalaxyLines(data);
 
   setNodeState("QFN", data.qfnStatus || data.qfnTier || data.qfnCount);
   setNodeState("VAULT", data.vaultCount);
@@ -324,4 +449,5 @@ window.addEventListener("message", event => {
   }
 });
 
-setMode("idle", "COMMAND DECK V8");
+drawGalaxyLines({});
+setMode("idle", "COMMAND DECK V9");
