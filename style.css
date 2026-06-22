@@ -1,268 +1,84 @@
-/* PHASE 11 — COMMAND DECK */
-.command-deck {
+/* PHASE 11 — COMMAND HALO / LIVE V3 DECK */
+
+.command-halo {
   position: absolute;
-  left: 50%;
-  top: 45%;
-  width: 760px;
-  height: 760px;
-  transform: translate(-50%, -50%);
+  width: 610px;
+  height: 610px;
   border-radius: 50%;
-  pointer-events: none;
-  z-index: 12;
   animation: commandDeckFloat 7s ease-in-out infinite;
+  z-index: 15;
 }
 
-.command-node {
+.node {
   position: absolute;
-  width: 128px;
-  height: 62px;
-  border-radius: 18px;
+  width: 96px;
+  height: 74px;
+  border-radius: 20px;
   border: 1px solid var(--core);
   background:
-    radial-gradient(circle at 50% 0%, rgba(255,255,255,.18), transparent 42%),
-    linear-gradient(145deg, rgba(0,0,0,.72), rgba(0,35,72,.54));
+    radial-gradient(circle at 50% 0%, rgba(255,255,255,.2), transparent 42%),
+    linear-gradient(145deg, rgba(0,0,0,.78), rgba(0,35,72,.58));
   color: white;
   box-shadow:
-    0 0 24px var(--core-soft),
-    inset 0 0 22px rgba(0,234,255,.08);
-  pointer-events: auto;
+    0 0 28px var(--soft),
+    inset 0 0 24px rgba(0,234,255,.1);
   cursor: pointer;
   display: grid;
   place-items: center;
-  gap: 2px;
+  text-align: center;
   padding: 8px;
-  font-size: 10px;
   letter-spacing: 1px;
   transition: transform .22s ease, box-shadow .22s ease, background .22s ease;
   backdrop-filter: blur(12px);
 }
 
-.command-node strong {
+.node strong {
   color: var(--core);
-  font-size: 12px;
+  font-size: 11px;
   letter-spacing: 2px;
 }
 
-.command-node span {
+.node span {
   color: #e9fcff;
   font-size: 10px;
 }
 
-.command-node:hover {
-  transform: scale(1.12);
+.node:hover {
+  transform: scale(1.14);
   background:
-    radial-gradient(circle at 50% 0%, var(--core-soft), transparent 52%),
-    linear-gradient(145deg, rgba(0,40,80,.86), rgba(0,0,0,.72));
+    radial-gradient(circle at 50% 0%, var(--soft), transparent 52%),
+    linear-gradient(145deg, rgba(0,40,80,.9), rgba(0,0,0,.78));
   box-shadow:
-    0 0 34px var(--core-glow),
-    0 0 70px rgba(0,234,255,.28),
-    inset 0 0 30px var(--core-soft);
+    0 0 38px var(--glow),
+    0 0 80px rgba(0,234,255,.3),
+    inset 0 0 32px var(--soft);
 }
 
-.node-qfn {
-  left: 50%;
-  top: 0;
-  transform: translate(-50%, -50%);
+.node.live {
+  border-color: var(--green);
+  box-shadow:
+    0 0 34px rgba(0,255,191,.45),
+    inset 0 0 24px rgba(0,255,191,.14);
 }
 
-.node-vault {
-  right: 55px;
-  top: 115px;
+.node.warn {
+  border-color: var(--gold);
+  box-shadow:
+    0 0 34px rgba(255,226,122,.42),
+    inset 0 0 24px rgba(255,226,122,.13);
 }
 
-.node-timeline {
-  right: -10px;
-  top: 50%;
-  transform: translateY(-50%);
-}
-
-.node-certificates {
-  right: 55px;
-  bottom: 115px;
-}
-
-.node-reports {
-  left: 50%;
-  bottom: 0;
-  transform: translate(-50%, 50%);
-}
-
-.node-learning {
-  left: 55px;
-  bottom: 115px;
-}
-
-.node-mi8 {
-  left: -10px;
-  top: 50%;
-  transform: translateY(-50%);
-}
-
-.node-dossier {
-  left: 55px;
-  top: 115px;
-}
-
-.node-qfn:hover,
-.node-reports:hover {
-  transform: translate(-50%, -50%) scale(1.12);
-}
-
-.node-reports:hover {
-  transform: translate(-50%, 50%) scale(1.12);
-}
-
-.node-timeline:hover,
-.node-mi8:hover {
-  transform: translateY(-50%) scale(1.12);
-}
-
-.module-tooltip {
-  position: absolute;
-  left: 50%;
-  top: calc(45% + 225px);
-  transform: translateX(-50%);
-  width: 360px;
-  min-height: 70px;
-  padding: 14px 18px;
-  border-radius: 18px;
-  background: rgba(0,0,0,.62);
-  border: 1px solid rgba(0,234,255,.35);
-  box-shadow: 0 0 30px rgba(0,234,255,.2);
-  z-index: 40;
-  text-align: center;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity .22s ease, transform .22s ease;
-  backdrop-filter: blur(14px);
-}
-
-.module-tooltip.active {
-  opacity: 1;
-  transform: translateX(-50%) translateY(-5px);
-}
-
-.module-tooltip strong {
-  display: block;
-  color: var(--core);
-  letter-spacing: 2px;
-  margin-bottom: 7px;
-}
-
-.module-tooltip span {
-  color: #e9fcff;
-  font-size: 12px;
-  line-height: 1.45;
+.node.empty {
+  opacity: .48;
+  border-color: rgba(255,255,255,.28);
+  filter: grayscale(.35);
 }
 
 @keyframes commandDeckFloat {
   0%,100% {
-    filter: drop-shadow(0 0 18px var(--core-soft));
+    filter: drop-shadow(0 0 18px var(--soft));
   }
-
   50% {
-    filter: drop-shadow(0 0 34px var(--core-glow));
-  }
-}
-
-@media(max-width:900px) {
-  .command-deck {
-    width: 570px;
-    height: 570px;
-  }
-
-  .command-node {
-    width: 104px;
-    height: 54px;
-    font-size: 9px;
-  }
-
-  .command-node strong {
-    font-size: 10px;
-  }
-
-  .node-vault,
-  .node-certificates {
-    right: 22px;
-  }
-
-  .node-dossier,
-  .node-learning {
-    left: 22px;
-  }
-
-  .node-timeline {
-    right: -28px;
-  }
-
-  .node-mi8 {
-    left: -28px;
-  }
-
-  .module-tooltip {
-    width: 300px;
-    top: calc(45% + 190px);
-  }
-}
-
-@media(max-width:700px) {
-  .command-deck {
-    position: absolute;
-    width: calc(100% - 20px);
-    height: 250px;
-    top: auto;
-    bottom: 105px;
-    left: 50%;
-    transform: translateX(-50%);
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 8px;
-    border-radius: 0;
-    animation: none;
-    z-index: 45;
-  }
-
-  .command-node,
-  .node-qfn,
-  .node-vault,
-  .node-timeline,
-  .node-certificates,
-  .node-reports,
-  .node-learning,
-  .node-mi8,
-  .node-dossier {
-    position: relative;
-    left: auto;
-    right: auto;
-    top: auto;
-    bottom: auto;
-    transform: none;
-    width: 100%;
-    height: 54px;
-    border-radius: 14px;
-  }
-
-  .command-node:hover,
-  .node-qfn:hover,
-  .node-reports:hover,
-  .node-timeline:hover,
-  .node-mi8:hover {
-    transform: scale(1.04);
-  }
-
-  .module-tooltip {
-    display: none;
-  }
-
-  .floor-platform {
-    bottom: 360px;
-  }
-
-  .waveform {
-    bottom: 350px;
-  }
-
-  .status-strip {
-    bottom: 5px;
+    filter: drop-shadow(0 0 38px var(--glow));
   }
 }
