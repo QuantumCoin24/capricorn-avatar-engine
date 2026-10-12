@@ -1,0 +1,34 @@
+
+/* CAPRICORN V3 — NON-DESTRUCTIVE VISUAL EVOLUTION
+   All original V9 DOM IDs, events, module keys and controller logic are retained. */
+:root { color-scheme:dark; }
+#app {
+  isolation:isolate;
+  background:
+    radial-gradient(ellipse 52% 42% at 50% 44%, rgba(255,226,122,.115),transparent 72%),
+    radial-gradient(ellipse 66% 52% at 52% 20%, rgba(0,234,255,.12),transparent 78%),
+    radial-gradient(ellipse 45% 60% at 10% 90%, rgba(48,70,170,.16),transparent 80%),
+    linear-gradient(145deg,#01030c,#07182c 48%,#01040e);
+}
+#app::before {content:"";position:absolute;inset:14px;border:1px solid rgba(124,213,250,.12);border-radius:24px;pointer-events:none;z-index:2;box-shadow:inset 0 0 35px rgba(0,234,255,.045);}
+#app::after {content:"CAPRICORN  /  COMMAND NEXUS V3";position:absolute;top:26px;left:32px;z-index:25;font-size:10px;letter-spacing:.28em;font-weight:700;color:rgba(214,242,255,.76);pointer-events:none;text-shadow:0 0 16px rgba(0,234,255,.55);}
+.stars {opacity:.35;filter:drop-shadow(0 0 3px rgba(100,220,255,.5));}
+.grid {opacity:.095;transform:perspective(640px) rotateX(24deg) scale(1.4);}
+.orb {border-width:1px;box-shadow:0 0 30px var(--soft),0 0 110px rgba(0,234,255,.22),inset 0 0 95px rgba(0,234,255,.12);background:radial-gradient(circle at 44% 38%,rgba(255,255,255,.07),transparent 35%),radial-gradient(circle,var(--soft),rgba(0,234,255,.08) 54%,rgba(0,0,0,.6));}
+.orb .logo {filter:drop-shadow(0 0 15px var(--core)) drop-shadow(0 0 40px rgba(0,234,255,.32));}
+.node {border-radius:22px;background:linear-gradient(155deg,rgba(14,44,65,.89),rgba(1,8,21,.9));border:1px solid color-mix(in srgb,var(--core) 65%,transparent);box-shadow:0 8px 30px rgba(0,0,0,.4),0 0 18px var(--soft),inset 0 1px 0 rgba(255,255,255,.16);}
+.node:focus-visible {outline:2px solid #fff;outline-offset:4px;}
+.node strong {font-size:11px;letter-spacing:.14em;}
+.node span {font-variant-numeric:tabular-nums;}
+.status {bottom:14px;padding:11px 18px;gap:16px;border:1px solid rgba(0,234,255,.24);background:rgba(2,11,27,.82);box-shadow:0 12px 40px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.08);backdrop-filter:blur(16px);font-size:11px;}
+.tooltip {bottom:65px;background:rgba(2,12,28,.92);border-color:rgba(0,234,255,.42);}
+.tooltip.active {bottom:75px;}
+@media(max-width:700px) {
+  #app::before {inset:7px;border-radius:14px;}
+  #app::after {top:14px;left:16px;font-size:8px;letter-spacing:.13em;}
+  .node {border-radius:15px;}
+  .status {bottom:12px;gap:7px;font-size:9px;}
+}
+@media(prefers-reduced-motion:reduce) {
+  #app *,#app *::before,#app *::after {animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important;}
+}
