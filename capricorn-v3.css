@@ -33,10 +33,23 @@
   #app *,#app *::before,#app *::after {animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important;}
 }
 
-/* V3.1 — REPORT / STATUS COLLISION FIX */
-.n-reports { bottom: 58px; }
-.status { position: fixed; bottom: 18px; left: 50%; transform: translateX(-50%); z-index: 60; }
-@media (max-width:700px) {
-  .n-reports { bottom: 38px; }
-  .status { bottom: 10px; max-width: calc(100vw - 20px); }
+/* V3.2 — REPORT AND STATUS: full clearance at all desktop sizes */
+#app .command-halo .n-reports {
+  bottom: 145px;
+  transform: translate(-50%, 0);
+}
+#app .command-halo .n-reports:hover,
+#app .command-halo .n-reports.path {
+  transform: translate(-50%, 0) scale(1.08);
+}
+#app .status {
+  position: fixed;
+  bottom: 18px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 60;
+}
+@media (max-width: 700px) {
+  #app .command-halo .n-reports { bottom: 95px; }
+  #app .status { bottom: 10px; max-width: calc(100vw - 20px); }
 }
