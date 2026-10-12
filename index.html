@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Capricorn OS Command Deck V9 — Living Galaxy</title>
+<title>Capricorn OS Command Deck V9 — V4 Intelligence Ready</title>
 
 <style>
 :root{
@@ -451,6 +451,7 @@ html,body{
       <div><strong>VOICE:</strong> <span id="voiceText">READY</span></div>
       <div><strong>MEMORY:</strong> <span id="memoryText">ONLINE</span></div>
       <div><strong>MODE:</strong> <span id="modeText">CORE</span></div>
+      <div><strong>INTELLIGENCE:</strong> <span id="intelligenceText">AWAITING V4</span></div>
     </div>
   </section>
 </main>
@@ -690,6 +691,46 @@ function setClass(data={}){
   app.classList.add(c);
 }
 
+ // V4 results are accepted only when the backend supplies its real version marker.
+ // V4 is a read-only member-scoped pilot; it does not measure full platform uptime.
+ function getV4Payload(value){
+   if(!value || typeof value !== "object") return null;
+   const candidates = [value, value.intelligenceV4, value.capricornIntelligenceV4,
+     value.v4, value.context?.intelligenceV4, value.context?.capricornIntelligenceV4];
+   return candidates.find(x => x && typeof x === "object" &&
+     x.version === "4.0.0-pilot" && (x.code === "READY" || x.code === "PARTIAL_DATA")) || null;
+ }
+
+ function applyV4(value){
+   const v4 = getV4Payload(value);
+   if(!v4) return false;
+   v4State = v4;
+   intelligenceText.textContent = v4.code === "READY" ? "V4 PILOT READY" : "V4 PARTIAL DATA";
+   intelligenceText.title = `Capricorn Intelligence ${v4.version} — ${v4.mode || "READ_ONLY"}`;
+   const counts = {};
+   (Array.isArray(v4.modules) ? v4.modules : []).forEach(m => {
+     if(m?.status === "QUERY_OK" && Number.isFinite(m.recordCount)) counts[m.id] = m.recordCount;
+   });
+   // Update only fields V4 actually knows. No inferred MI8 status or fabricated health percentage.
+   const replacements = { vault:"VAULT", timeline:"TIMELINE", certificates:"CERTIFICATES",
+     reports:"REPORTS", learning:"LEARNING" };
+   Object.entries(replacements).forEach(([id,key]) => {
+     if(Object.prototype.hasOwnProperty.call(counts,id)) {
+       nodes[key].textContent = String(counts[id]);
+       setLiveState(key, counts[id]);
+     }
+   });
+   if(Object.prototype.hasOwnProperty.call(counts,"qfn")) {
+     nodes.QFN.textContent = String(counts.qfn);
+     const btn = buttonNodes.QFN;
+     btn?.classList.remove("live","empty","warn","alert");
+     btn?.classList.add(counts.qfn > 0 ? "live" : "empty");
+   }
+   if(v4.code === "PARTIAL_DATA") statusText.textContent = "PARTIAL DATA";
+   else if(statusText.textContent === "PARTIAL DATA") statusText.textContent = "READY";
+   return true;
+ }
+
 function setDeck(data={}){
   deck=data||{};
 
@@ -777,6 +818,7 @@ window.addEventListener("message",event=>{
   if(msg.type==="capricorn:setMode") setMode(msg.mode,msg.label);
   if(msg.type==="capricorn:setClaimantClass") setClass(msg);
   if(msg.type==="capricorn:setCommandDeck") setDeck(msg.data||{});
+  if(msg.type==="capricorn:setIntelligenceV4" || msg.type==="capricorn:v4") applyV4(msg.data||msg.result||{});
 });
 
 drawGalaxyLines({});
