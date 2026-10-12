@@ -532,42 +532,10 @@ function moduleKey(value){
   return moduleAliases[String(value || "").trim()] || moduleAliases[String(value || "").trim().toLowerCase()] || String(value || "").toUpperCase();
 }
 
-function setAppHealth(data={}){
-  const health = numeric(data.platformHealth);
-
-  app.classList.remove("health-excellent","health-strong","health-stable","health-weak","health-critical","mission-active","event-active","galaxy-active");
-
-  if(health >= 90) app.classList.add("health-excellent");
-  else if(health >= 75) app.classList.add("health-strong");
-  else if(health >= 55) app.classList.add("health-stable");
-  else if(health >= 35) app.classList.add("health-weak");
-  else app.classList.add("health-critical");
-
-  if(numeric(data.missionCount) > 0) app.classList.add("mission-active");
-  if(numeric(data.eventCount) > 0) app.classList.add("event-active");
-  if(numeric(data.galaxyNodes) > 0) app.classList.add("galaxy-active");
-}
-
 function clearPathNodes(){
   Object.values(buttonNodes).forEach(btn=>{
     if(btn) btn.classList.remove("path");
   });
-}
-
-function highlightMissionPath(data={}){
-  clearPathNodes();
-
-  const primary = String(data.primaryMission || data.recommendedAction || "").toLowerCase();
-
-  if(primary.includes("qfn") || primary.includes("kyc")) buttonNodes.QFN?.classList.add("path");
-  if(primary.includes("vault")) buttonNodes.VAULT?.classList.add("path");
-  if(primary.includes("report")) buttonNodes.REPORTS?.classList.add("path");
-  if(primary.includes("certificate")) buttonNodes.CERTIFICATES?.classList.add("path");
-  if(primary.includes("timeline")) buttonNodes.TIMELINE?.classList.add("path");
-  if(primary.includes("learn")) buttonNodes.LEARNING?.classList.add("path");
-  if(primary.includes("mi8")) buttonNodes.MI8?.classList.add("path");
-
-  buttonNodes.DOSSIER?.classList.add("path");
 }
 
 function setLiveState(module, value){
@@ -726,71 +694,22 @@ function setClass(data={}){
      btn?.classList.remove("live","empty","warn","alert");
      btn?.classList.add(counts.qfn > 0 ? "live" : "empty");
    }
+   memoryText.textContent = "MEMBER-SCOPED · READ ONLY";
+   modeText.textContent = "INTELLIGENCE V4";
+   nodes.MI8.textContent = "--";
+   nodes.DOSSIER.textContent = "V4";
+   drawGalaxyLines({});
    if(v4.code === "PARTIAL_DATA") statusText.textContent = "PARTIAL DATA";
    else if(statusText.textContent === "PARTIAL DATA") statusText.textContent = "READY";
    return true;
  }
 
-function setDeck(data={}){
-  deck=data||{};
-
-  nodes.QFN.textContent = clean(deck.qfnStatus || deck.qfnTier);
-  nodes.VAULT.textContent = clean(deck.vaultCount,"0");
-  nodes.TIMELINE.textContent = clean(deck.timelineCount,"0");
-  nodes.CERTIFICATES.textContent = clean(deck.certificateCount,"0");
-  nodes.REPORTS.textContent = clean(deck.reportCount,"0");
-  nodes.LEARNING.textContent = clean(deck.learningCount,"0");
-  nodes.MI8.textContent = clean(deck.mi8Count,"0");
-
-  nodes.DOSSIER.textContent =
-    deck.platformHealth !== undefined
-      ? `${clean(deck.platformHealth,"0")}%`
-      : clean(deck.dossierStatus,"READY");
-
-  memoryText.textContent =
-    deck.missionCount !== undefined
-      ? `M${clean(deck.missionCount,"0")} / E${clean(deck.eventCount,"0")}`
-      : clean(deck.memoryStatus,"ONLINE");
-
-  modeText.textContent =
-    deck.galaxyNodes !== undefined
-      ? `GALAXY ${clean(deck.galaxyNodes,"0")}/${clean(deck.galaxyLinks,"0")}`
-      : "COMMAND DECK";
-
-  setAppHealth(deck);
-  highlightMissionPath(deck);
-  drawGalaxyLines(deck);
-
-  setLiveState("QFN", deck.qfnStatus || deck.qfnTier);
-  setLiveState("VAULT", deck.vaultCount);
-  setLiveState("TIMELINE", deck.timelineCount);
-  setLiveState("CERTIFICATES", deck.certificateCount);
-  setLiveState("REPORTS", deck.reportCount);
-  setLiveState("LEARNING", deck.learningCount);
-  setLiveState("MI8", deck.mi8Count);
-  setLiveState("DOSSIER", deck.dossierStatus || deck.platformHealth);
-}
-
 function info(module){
-  const d=deck||{};
-
-  return {
-    QFN:`Tier: ${clean(d.qfnTier)} | Status: ${clean(d.qfnStatus)} | Units: ${clean(d.unitBalance,"0")}`,
-    VAULT:`${clean(d.vaultCount,"0")} vault file(s) connected.`,
-    TIMELINE:`${clean(d.timelineCount,"0")} timeline record(s) connected.`,
-    CERTIFICATES:`${clean(d.certificateCount,"0")} certificate record(s) connected.`,
-    REPORTS:`${clean(d.reportCount,"0")} report record(s) connected.`,
-    LEARNING:`${clean(d.learningCount,"0")} learning record(s) connected.`,
-    MI8:`${clean(d.mi8Count,"0")} MI8 intelligence record(s) connected.`,
-    DOSSIER:[
-      `Platform Health: ${clean(d.platformHealth,"0")}%`,
-      `Health Status: ${clean(d.healthStatus,"HEALTH_LOADING")}`,
-      `Missions: ${clean(d.missionCount,"0")}`,
-      `Events: ${clean(d.eventCount,"0")}`,
-      `Galaxy: ${clean(d.galaxyNodes,"0")} nodes / ${clean(d.galaxyLinks,"0")} links`,
-      `Primary Mission: ${clean(d.primaryMission,"No mission loaded")}`
-    ].join(" | ")
-  }[module] || "Command module ready.";
+  return module === "MI8"
+    ? "MI8 is not part of the V4 read-only pilot."
+    : module === "DOSSIER"
+      ? "Capricorn Intelligence V4 · member-scoped diagnostics."
+      : "V4 module. Counts display when authorised data is received.";
 }
 
 document.querySelectorAll(".node").forEach(btn=>{
@@ -817,12 +736,14 @@ window.addEventListener("message",event=>{
 
   if(msg.type==="capricorn:setMode") setMode(msg.mode,msg.label);
   if(msg.type==="capricorn:setClaimantClass") setClass(msg);
-  if(msg.type==="capricorn:setCommandDeck") setDeck(msg.data||{});
-  if(msg.type==="capricorn:setIntelligenceV4" || msg.type==="capricorn:v4") applyV4(msg.data||msg.result||{});
+  // Legacy V2 command-deck payloads intentionally ignored.
+  if(msg.type==="capricorn:setIntelligenceV4" || msg.type==="capricorn:v4" ||
+     msg.type==="capricorn:setContext") applyV4(msg.data||msg.result||msg.context||{});
 });
 
 drawGalaxyLines({});
-setMode("idle","COMMAND DECK V9");
+setMode("idle","WAITING FOR V4");
+intelligenceText.textContent = "V4 CONNECTING";
 </script>
 </body>
 </html>
